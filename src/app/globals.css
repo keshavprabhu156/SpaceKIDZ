@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --space-black: #030014;
+  --electric: #4cc9f0;
+  --nebula: #7b2ff7;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--space-black);
+  color: #e8f0ff;
+  overflow-x: hidden;
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #05060f;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #2242a8, #7b2ff7);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #3b6af0, #a855f7);
+}
+
+/* ---------- Glass / Holo UI ---------- */
+@layer components {
+  .glass-panel {
+    @apply rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl;
+  }
+  .holo-panel {
+    @apply glass-panel shadow-holo;
+    background-image: linear-gradient(
+      135deg,
+      rgba(76, 201, 240, 0.06),
+      rgba(123, 47, 247, 0.05) 50%,
+      rgba(255, 255, 255, 0.02)
+    );
+  }
+  .holo-border {
+    position: relative;
+  }
+  .holo-border::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(76, 201, 240, 0.6), transparent 40%, rgba(123, 47, 247, 0.6));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  .text-glow-cyan {
+    text-shadow: 0 0 24px rgba(76, 201, 240, 0.6);
+  }
+  .text-glow-nebula {
+    text-shadow: 0 0 24px rgba(168, 85, 247, 0.6);
+  }
+  .text-glow-gold {
+    text-shadow: 0 0 20px rgba(245, 197, 66, 0.55);
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-display text-sm font-semibold uppercase tracking-widest text-space-black transition-all duration-300;
+    background: linear-gradient(135deg, #4cc9f0, #3b6af0);
+    box-shadow: 0 0 24px rgba(76, 201, 240, 0.35);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 0 40px rgba(76, 201, 240, 0.6);
+    transform: translateY(-2px);
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-electric/40 bg-electric/5 px-6 py-3 font-display text-sm font-semibold uppercase tracking-widest text-electric transition-all duration-300;
+  }
+  .btn-secondary:hover {
+    @apply border-electric bg-electric/15;
+    box-shadow: 0 0 28px rgba(76, 201, 240, 0.3);
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 px-6 py-3 font-display text-sm font-semibold uppercase tracking-widest text-star/80 transition-all duration-300 hover:border-nebula-light/60 hover:text-white;
+  }
+  .input-holo {
+    @apply w-full rounded-xl border border-white/10 bg-space-panel/80 px-4 py-3 text-sm text-star placeholder-star/30 outline-none transition-all duration-300 focus:border-electric/60 focus:shadow-holo;
+  }
+  .label-holo {
+    @apply mb-1.5 block font-mono text-[11px] uppercase tracking-[0.2em] text-electric/70;
+  }
+  .section-tag {
+    @apply mb-4 inline-flex items-center gap-2 rounded-full border border-electric/30 bg-electric/5 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.25em] text-electric;
+  }
+}
+
+/* ---------- Star field (CSS layers used behind content sections) ---------- */
+.stars-layer {
+  position: absolute;
+  inset: 0;
+  background-repeat: repeat;
+  pointer-events: none;
+}
+
+/* ---------- Holo scanline sweep for panels ---------- */
+.scan-sweep {
+  position: relative;
+  overflow: hidden;
+}
+.scan-sweep::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(180deg, transparent, rgba(76, 201, 240, 0.06), transparent);
+  animation: scanline 7s linear infinite;
+  pointer-events: none;
+}
+
+/* Reduce motion for accessibility (WCAG) */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
