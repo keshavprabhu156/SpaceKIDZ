@@ -47,7 +47,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const user = createStudent({ email, password, profile: { ...profile, grade } });
+    const user = await createStudent({ email, password, profile: { ...profile, grade } });
     const token = await signSession({
       sub: user.id,
       name: user.name,

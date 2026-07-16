@@ -32,21 +32,102 @@ const pillars = [
 
 export function AboutSection() {
   return (
-    <section id="about" className="relative py-28">
+    <section id="about" className="relative py-32 overflow-hidden bg-space-black">
+      {/* Background soft ambient radial glow */}
+      <div className="pointer-events-none absolute -left-64 top-1/4 h-[600px] w-[600px] rounded-full bg-electric/5 blur-[150px]" />
+      
       <div className="mx-auto max-w-7xl px-6">
-        <SectionHeading
-          tag="01 · About the Curriculum"
-          title={<>Not a Course. <span className="text-electric">A Space Academy.</span></>}
-          subtitle="Seven grades. One trajectory. A complete space education program that transforms curious students into mission-ready thinkers through interactive science, engineering and exploration."
-        />
-        <div data-reveal-stagger className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {pillars.map((p) => (
-            <div key={p.title} className="holo-panel scan-sweep group p-7 transition-all duration-500 hover:shadow-holo-strong hover:-translate-y-1">
-              <span className="text-3xl text-electric">{p.icon}</span>
-              <h3 className="mt-5 font-display text-base font-bold uppercase tracking-wider text-star">{p.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-star/55">{p.text}</p>
+        {/* Apple-style typography section heading */}
+        <div data-reveal className="max-w-4xl mb-20">
+          <span className="font-mono text-xs uppercase tracking-[0.3em] text-electric">
+            01 · Academy Protocols
+          </span>
+          <h2 className="mt-4 font-display text-4xl font-black uppercase tracking-tight text-star sm:text-5xl md:text-6xl leading-[1.05]">
+            Not a course. <br />
+            <span className="bg-gradient-to-r from-electric via-galaxy-light to-nebula-light bg-clip-text text-transparent">
+              A Space Academy.
+            </span>
+          </h2>
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-star/50 font-medium">
+            Seven grades. One trajectory. A complete space education program that transforms curious students into mission-ready thinkers through interactive science, engineering and live operations.
+          </p>
+        </div>
+
+        {/* Bento grid layout */}
+        <div className="grid gap-8 lg:grid-cols-[1.1fr_1.9fr]">
+          {/* LEFT BENTO CARD: Apple-style interactive telemetry display */}
+          <div data-reveal className="relative flex flex-col justify-between rounded-[28px] border border-white/10 bg-[#121214]/65 p-8 backdrop-blur-md overflow-hidden min-h-[460px]">
+            {/* Ambient inner glow */}
+            <div className="pointer-events-none absolute -right-32 -top-32 h-64 w-64 rounded-full bg-electric/5 blur-3xl" />
+            
+            <div>
+              <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-star/30">Telemetry Stream</p>
+              <h3 className="mt-2 font-display text-xl font-bold uppercase tracking-wider text-star">
+                Orbit Tracker
+              </h3>
+              <p className="mt-1 font-mono text-[8px] uppercase tracking-[0.2em] text-electric">LEO_STATION_UPLINK // NOMINAL</p>
             </div>
-          ))}
+
+            {/* Minimalist vector orbit animation in center */}
+            <div className="my-10 relative flex h-48 w-full items-center justify-center rounded-2xl bg-black/40 border border-white/[0.03] overflow-hidden">
+              {/* Clean background grid */}
+              <div className="absolute inset-0 bg-holo-grid bg-[size:24px_24px] opacity-10" />
+              
+              {/* Earth Sphere in center (glowing radial gradient) */}
+              <div className="absolute h-16 w-16 rounded-full bg-gradient-to-br from-cyan-400 via-blue-600 to-indigo-950 shadow-[0_0_30px_rgba(76,201,240,0.25)] border border-cyan-400/20" />
+              
+              {/* Orbit Path (Clean dotted circle) */}
+              <div className="absolute h-36 w-36 rounded-full border border-dashed border-electric/20" />
+              
+              {/* Animating satellite point */}
+              <div className="absolute inset-0 origin-center animate-spin" style={{ animationDuration: "12s" }}>
+                {/* Positioned on the edge of the 36-radius orbit */}
+                <div className="absolute top-[20px] left-1/2 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-cyan-400 shadow-[0_0_12px_rgba(76,201,240,0.85)] border border-white/50" />
+              </div>
+            </div>
+
+            {/* Premium specs list (Apple hardware style) */}
+            <div className="grid grid-cols-2 gap-6 border-t border-white/5 pt-6 font-mono">
+              <div>
+                <p className="text-[9px] uppercase tracking-widest text-star/35">Orbit Radius</p>
+                <p className="mt-1.5 text-2xl font-bold text-star tracking-tight">6,800 <span className="text-xs text-star/50 font-normal font-sans uppercase">km</span></p>
+              </div>
+              <div>
+                <p className="text-[9px] uppercase tracking-widest text-star/35">Velocity</p>
+                <p className="mt-1.5 text-2xl font-bold text-star tracking-tight">7.8 <span className="text-xs text-star/50 font-normal font-sans uppercase">km/s</span></p>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT BENTO CARD: 4 pillars in a bento layout */}
+          <div data-reveal-stagger className="grid gap-6 sm:grid-cols-2">
+            {pillars.map((p, idx) => (
+              <div
+                key={p.title}
+                className="group relative rounded-[28px] border border-white/10 bg-[#121214]/65 p-8 backdrop-blur-md overflow-hidden transition-all duration-300 hover:border-electric/30 hover:bg-[#151518]/90"
+              >
+                {/* Tech Bracket index */}
+                <div className="absolute right-6 top-6 font-mono text-[10px] text-star/20 group-hover:text-electric/50 transition-colors">
+                  [ 0{idx + 1} ]
+                </div>
+                
+                <span className="text-3xl text-electric drop-shadow-[0_0_12px_rgba(76,201,240,0.4)] transition-transform duration-500 group-hover:scale-110 inline-block">
+                  {p.icon}
+                </span>
+                
+                <h4 className="mt-6 font-display text-base font-bold uppercase tracking-wider text-star transition-colors group-hover:text-electric">
+                  {p.title}
+                </h4>
+                
+                <p className="mt-3 text-sm leading-relaxed text-star/45 group-hover:text-star/65 transition-colors">
+                  {p.text}
+                </p>
+                
+                {/* Subtle border bottom hover glow */}
+                <div className="absolute bottom-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-electric/0 to-transparent group-hover:via-electric/25 transition-all duration-500" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

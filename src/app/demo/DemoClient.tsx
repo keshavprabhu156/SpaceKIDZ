@@ -18,7 +18,7 @@ export default function DemoClient() {
   return (
     <div className="space-y-16">
       <OrbitSimulator />
-      <div>
+      <div id="quiz-section">
         <h2 className="mb-5 font-display text-lg font-bold uppercase tracking-[0.2em] text-electric">
           Mission 2 · Sample Weekly Assessment
         </h2>

@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json({ error: "A valid email is required" }, { status: 400 });
   }
-  const user = findByEmail(email);
+  const user = await findByEmail(email);
   if (user) {
     console.info(`[auth] password reset requested for ${user.id} (email delivery pending integration)`);
   }

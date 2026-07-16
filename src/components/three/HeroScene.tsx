@@ -3,7 +3,6 @@
 import { Suspense, useEffect } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { Stars } from "@react-three/drei";
-import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import Astronaut from "./Astronaut";
@@ -58,9 +57,9 @@ function SceneContents() {
       <Astronaut position={[0, 0.15, 0]} />
       <OrbitRings />
 
-      {/* ------- Orbiting hardware ------- */}
-      <Satellite radius={2.7} speed={0.1} phase={0.5} tilt={0.35} scale={0.9} />
-      <Satellite radius={3.4} speed={-0.07} phase={2.8} tilt={-0.25} scale={0.7} />
+      {/* ------- Orbiting hardware: scaled down and pushed out to look distant and detailed ------- */}
+      <Satellite radius={3.8} speed={0.08} phase={0.5} tilt={0.25} scale={0.22} />
+      <Satellite radius={4.6} speed={-0.05} phase={2.8} tilt={-0.15} scale={0.16} />
       <MiniRocket position={[2.5, -1.5, -1.2]} />
 
       {/* ------- Worlds ------- */}
@@ -88,11 +87,7 @@ function SceneContents() {
       <Asteroids count={12} />
       <Particles count={320} />
 
-      {/* ------- Post-processing: bloom + vignette ------- */}
-      <EffectComposer multisampling={0}>
-        <Bloom intensity={0.55} luminanceThreshold={0.25} luminanceSmoothing={0.7} mipmapBlur radius={0.7} />
-        <Vignette eskil={false} offset={0.25} darkness={0.75} />
-      </EffectComposer>
+      {/* Post-processing disabled for React 19 / Next.js Turbopack compatibility */}
     </>
   );
 }

@@ -29,14 +29,21 @@ const fadeUp = {
 
 export default function Hero() {
   return (
-    <section className="relative flex min-h-screen items-center overflow-hidden">
-      {/* ambient nebula glow */}
-      <div className="pointer-events-none absolute inset-0 bg-nebula-radial" />
-      <div className="pointer-events-none absolute inset-0 bg-holo-grid bg-[size:56px_56px] opacity-40 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]" />
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden py-32 bg-space-black">
+      {/* 3D Immersive Space Scene Backdrop */}
+      <div className="absolute inset-0 z-0 h-full w-full pointer-events-none">
+        <HeroScene />
+      </div>
 
-      <div className="mx-auto grid w-full max-w-7xl gap-8 px-6 pt-24 pb-12 lg:grid-cols-2 lg:gap-4 lg:pt-16">
-        {/* ---------------- Left: copy ---------------- */}
-        <div className="relative z-10 flex flex-col justify-center">
+      {/* Cinematic radial overlays to ensure high contrast and text readability */}
+      <div className="pointer-events-none absolute inset-0 bg-space-black/45 z-10" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(8,8,12,0.35)_0%,rgba(8,8,12,0.85)_100%)] z-10" />
+
+      {/* Foreground centered interactive copy stage */}
+      <div className="relative z-20 mx-auto flex w-full max-w-5xl flex-col items-center px-6 text-center pointer-events-none">
+        
+        <div className="pointer-events-auto flex flex-col items-center">
+          {/* Top Grade Tag */}
           <motion.div variants={fadeUp} initial="hidden" animate="show" custom={0}>
             <span className="section-tag">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-electric" />
@@ -44,48 +51,51 @@ export default function Hero() {
             </span>
           </motion.div>
 
+          {/* Center Headline */}
           <motion.h1
             variants={fadeUp}
             initial="hidden"
             animate="show"
             custom={1}
-            className="font-display text-4xl font-black uppercase leading-[1.08] tracking-wide text-star sm:text-5xl xl:text-6xl"
+            className="mt-6 font-display text-4xl font-black uppercase leading-[1.05] tracking-wide text-star sm:text-5xl md:text-6xl lg:text-7xl max-w-4xl drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
           >
-            International
-            <br />
+            International <br />
             <span className="bg-gradient-to-r from-electric via-galaxy-light to-nebula-light bg-clip-text text-transparent">
               Space Curriculum
             </span>
           </motion.h1>
 
+          {/* Sub-headline */}
           <motion.p
             variants={fadeUp}
             initial="hidden"
             animate="show"
             custom={2}
-            className="mt-3 font-display text-lg font-medium uppercase tracking-[0.35em] text-electric text-glow-cyan sm:text-xl"
+            className="mt-4 font-display text-base font-semibold uppercase tracking-[0.4em] text-electric text-glow-cyan sm:text-lg"
           >
             Future Begins Here.
           </motion.p>
 
+          {/* Core Narrative */}
           <motion.p
             variants={fadeUp}
             initial="hidden"
             animate="show"
             custom={3}
-            className="mt-6 max-w-xl text-base leading-relaxed text-star/60"
+            className="mt-6 max-w-2xl text-sm sm:text-base leading-relaxed text-star/75 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] font-medium"
           >
             A world-class space education program where students don&apos;t read about space —
             they fly through it. Interactive 3D missions, real satellite science, and a global
             academy of young explorers across 12+ countries.
           </motion.p>
 
+          {/* Action CTAs */}
           <motion.div
             variants={fadeUp}
             initial="hidden"
             animate="show"
             custom={4}
-            className="mt-9 flex flex-wrap gap-4"
+            className="mt-10 flex flex-wrap justify-center gap-4"
           >
             <Link href="/login?role=student" className="btn-primary">
               Student Login
@@ -98,25 +108,24 @@ export default function Hero() {
             </Link>
           </motion.div>
 
-          {/* mission ticker */}
+          {/* Metrics Ticker */}
           <motion.div
             variants={fadeUp}
             initial="hidden"
             animate="show"
             custom={5}
-            className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 font-mono text-[11px] uppercase tracking-[0.2em] text-star/40"
+            className="mt-16 flex flex-wrap justify-center items-center gap-x-8 gap-y-3 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-star/45 border-t border-white/10 pt-8 w-full max-w-3xl"
           >
-            <span><span className="text-electric">37,700+</span> Cadets</span>
-            <span><span className="text-electric">262</span> Schools</span>
-            <span><span className="text-electric">12</span> Countries</span>
-            <span><span className="text-gold">98%</span> Mission Success</span>
+            <span><span className="text-electric font-bold">37,700+</span> Cadets</span>
+            <span className="h-1 w-1 rounded-full bg-white/20 hidden sm:inline-block" />
+            <span><span className="text-electric font-bold">262</span> Schools</span>
+            <span className="h-1 w-1 rounded-full bg-white/20 hidden sm:inline-block" />
+            <span><span className="text-electric font-bold">12</span> Countries</span>
+            <span className="h-1 w-1 rounded-full bg-white/20 hidden sm:inline-block" />
+            <span><span className="text-gold font-bold">98%</span> Mission Success</span>
           </motion.div>
         </div>
 
-        {/* ---------------- Right: 3D astronaut ---------------- */}
-        <div className="relative h-[420px] sm:h-[520px] lg:h-[calc(100vh-4rem)] lg:min-h-[560px]">
-          <HeroScene />
-        </div>
       </div>
 
       {/* scroll cue */}
@@ -124,9 +133,9 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2 }}
-        className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 lg:flex"
+        className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 lg:flex z-20"
       >
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-star/40">Begin Descent</span>
+        <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-star/40">Begin Descent</span>
         <div className="h-9 w-5 rounded-full border border-star/20 p-1">
           <div className="mx-auto h-2 w-1 animate-bounce rounded-full bg-electric" />
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 /**
@@ -14,7 +14,7 @@ type Question =
   | { kind: "match"; prompt: string; pairs: { left: string; right: string }[]; explain: string }
   | { kind: "image"; prompt: string; figure: string; options: string[]; answer: number; explain: string };
 
-const questions: Question[] = [
+const fallbackQuestions: Question[] = [
   {
     kind: "mcq",
     prompt: "A satellite in orbit is constantly…",
@@ -57,7 +57,37 @@ export default function SampleTest() {
   const [revealed, setRevealed] = useState(false);
   const [finished, setFinished] = useState(false);
 
-  const q = questions[i];
+  // Dynamic weekly assessment states
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [chapterTitle, setChapterTitle] = useState("Weekly Assessment");
+  const [testId, setTestId] = useState("");
+  const [hasAttempted, setHasAttempted] = useState(false);
+  const [pastScore, setPastScore] = useState<number | null>(null);
+  const [authenticated, setAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/student/tests/active")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.test) {
+          setQuestions(data.test.questions);
+          setChapterTitle(data.test.chapterTitle);
+          setTestId(data.test.id);
+        }
+        setHasAttempted(data.hasAttempted);
+        setPastScore(data.pastScore);
+        setAuthenticated(data.authenticated);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
+  const questionsToUse = questions.length > 0 ? questions : fallbackQuestions;
+  const q = questionsToUse[i];
 
   function checkMatch(): boolean {
     if (q.kind !== "match") return false;
@@ -77,8 +107,29 @@ export default function SampleTest() {
   }
 
   function next() {
-    if (i + 1 >= questions.length) {
+    if (i + 1 >= questionsToUse.length) {
       setFinished(true);
+      
+      // Submit attempt score to database if logged-in cadet
+      if (authenticated && testId) {
+        fetch("/api/student/tests/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            testId,
+            score,
+            answers: {},
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.ok) {
+              setHasAttempted(true);
+              setPastScore(score);
+            }
+          })
+          .catch(console.error);
+      }
       return;
     }
     setI(i + 1);
@@ -98,8 +149,21 @@ export default function SampleTest() {
     : q.kind === "boolean" ? boolPick !== null
     : Object.keys(matches).length === q.pairs.length;
 
-  if (finished) {
-    const pct = Math.round((score / questions.length) * 100);
+  if (loading) {
+    return (
+      <div className="holo-panel flex h-[260px] items-center justify-center">
+        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-electric/60 animate-pulse">
+          Retrieving assessment...
+        </p>
+      </div>
+    );
+  }
+
+  const isCompleted = finished || (hasAttempted && authenticated);
+
+  if (isCompleted) {
+    const displayScore = finished ? score : (pastScore ?? 0);
+    const pct = Math.round((displayScore / questionsToUse.length) * 100);
     return (
       <div className="holo-panel holo-border p-10 text-center">
         <p className="text-4xl">{pct >= 75 ? "🏅" : pct >= 50 ? "🛰" : "🔁"}</p>
@@ -108,9 +172,21 @@ export default function SampleTest() {
         </h3>
         <p className="mt-2 font-display text-4xl font-black text-electric">{pct}%</p>
         <p className="mt-2 text-sm text-star/50">
-          {score} of {questions.length} correct · {pct >= 75 ? "Assessment passed — XP and badge awarded in the full portal." : "In the full portal you'd get targeted lesson recommendations before retrying."}
+          {displayScore} of {questionsToUse.length} correct · {pct >= 75 ? "Assessment passed — XP and badge awarded." : "Assessment completed — final score recorded."}
         </p>
-        <button onClick={restart} className="btn-secondary mt-8">Retake Assessment</button>
+        
+        {authenticated ? (
+          <div className="mt-6 flex flex-col items-center gap-2">
+            <span className="rounded-full border border-emerald-500/30 bg-emerald-500/5 px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.25em] text-emerald-400">
+              🔒 Assessment Completed
+            </span>
+            <p className="text-[10px] font-mono text-star/30 uppercase tracking-widest mt-1">
+              Next weekly test unlocks Monday
+            </p>
+          </div>
+        ) : (
+          <button onClick={restart} className="btn-secondary mt-8">Retake Assessment</button>
+        )}
       </div>
     );
   }
@@ -126,13 +202,13 @@ export default function SampleTest() {
   return (
     <div className="holo-panel p-7 sm:p-9">
       <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.2em] text-star/40">
-        <span>Weekly Assessment · Demo</span>
-        <span>Q {i + 1} / {questions.length} · Score {score}</span>
+        <span>{authenticated ? chapterTitle : `${chapterTitle} (Demo)`}</span>
+        <span>Q {i + 1} / {questionsToUse.length} · Score {score}</span>
       </div>
       <div className="mt-3 h-1 overflow-hidden rounded-full bg-white/10">
         <div
           className="h-full bg-gradient-to-r from-electric to-nebula-light transition-all duration-500"
-          style={{ width: `${((i + (revealed ? 1 : 0)) / questions.length) * 100}%` }}
+          style={{ width: `${((i + (revealed ? 1 : 0)) / questionsToUse.length) * 100}%` }}
         />
       </div>
 
@@ -220,7 +296,7 @@ export default function SampleTest() {
               </button>
             ) : (
               <button onClick={next} className="btn-primary">
-                {i + 1 >= questions.length ? "View Debrief →" : "Next Question →"}
+                {i + 1 >= questionsToUse.length ? "View Debrief →" : "Next Question →"}
               </button>
             )}
           </div>
