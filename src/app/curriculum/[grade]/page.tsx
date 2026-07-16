@@ -6,7 +6,7 @@ import Footer from "@/components/layout/Footer";
 import StarBackground from "@/components/fx/StarBackground";
 import ScrollFX from "@/components/fx/ScrollFX";
 import { getGrade, lessonTypeMeta } from "@/data/curriculum";
-import { getSession } from "@/lib/session";
+import { getSession } from "@/utils/session";
 
 // Rendered per-request: the lesson rows show "Start" vs "Login" based on the
 // viewer's session cookie, so this page must not be statically cached.

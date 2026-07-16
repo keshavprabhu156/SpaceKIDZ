@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { verifySession, SESSION_COOKIE } from "@/lib/auth";
+import { verifySession, SESSION_COOKIE } from "@/services/auth";
 
 export async function GET() {
   const jar = await cookies();

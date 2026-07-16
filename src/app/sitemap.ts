@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { grades } from "@/data/curriculum";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL } from "@/utils/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

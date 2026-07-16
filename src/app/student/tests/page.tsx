@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import PortalShell from "@/components/portal/PortalShell";
 import SampleTest from "@/components/demo/SampleTest";
-import { getSession } from "@/lib/session";
+import { getSession } from "@/utils/session";
 
 export const metadata: Metadata = { title: "Weekly Tests — Mission Assessments" };
 

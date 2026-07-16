@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { findByEmail, verifyPassword } from "@/lib/users";
-import { signSession, SESSION_COOKIE } from "@/lib/auth";
+import { findByEmail, verifyPassword } from "@/services/users";
+import { signSession, SESSION_COOKIE } from "@/services/auth";
 
 export async function POST(req: Request) {
   const { email, password, remember } = await req.json().catch(() => ({}));

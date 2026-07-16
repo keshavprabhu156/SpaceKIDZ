@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PortalShell from "@/components/portal/PortalShell";
 import Flag from "@/components/ui/Flag";
-import { getSession } from "@/lib/session";
+import { getSession } from "@/utils/session";
 import { achievements } from "@/data/global";
 import {
   studentStats,

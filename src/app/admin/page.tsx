@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import PortalShell from "@/components/portal/PortalShell";
 import Flag from "@/components/ui/Flag";
-import { getSession } from "@/lib/session";
+import { getSession } from "@/utils/session";
 import { adminStats, recentSignups } from "@/data/dashboard";
 import { countries } from "@/data/global";
 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import PortalShell from "@/components/portal/PortalShell";
-import { getSession } from "@/lib/session";
+import { getSession } from "@/utils/session";
 import { teacherClasses, teacherResources, classPerformance } from "@/data/dashboard";
 
 export const metadata: Metadata = { title: "Teacher Portal — Instructor Deck" };

@@ -5,7 +5,7 @@ import PortalShell from "@/components/portal/PortalShell";
 import LessonContent from "@/components/learn/LessonContent";
 import LessonFooter from "@/components/learn/LessonFooter";
 import { findLesson, lessonTypeMeta } from "@/data/curriculum";
-import { getSession } from "@/lib/session";
+import { getSession } from "@/utils/session";
 
 export async function generateMetadata({
   params,

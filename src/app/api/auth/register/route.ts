@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { createStudent, type StudentProfile } from "@/lib/users";
-import { signSession, SESSION_COOKIE } from "@/lib/auth";
+import { createStudent, type StudentProfile } from "@/services/users";
+import { signSession, SESSION_COOKIE } from "@/services/auth";
 
 const required: (keyof StudentProfile)[] = [
   "fullName",

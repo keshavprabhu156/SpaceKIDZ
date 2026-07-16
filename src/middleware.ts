@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { verifySession, SESSION_COOKIE, type Role } from "@/lib/auth";
+import { verifySession, SESSION_COOKIE, type Role } from "@/services/auth";
 
 const protectedRoutes: { prefix: string; role: Role }[] = [
   { prefix: "/student", role: "student" },

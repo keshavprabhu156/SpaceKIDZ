@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { verifySession, SESSION_COOKIE } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { verifySession, SESSION_COOKIE } from "@/services/auth";
+import { prisma } from "@/services/prisma";
 
 const staticDemoQuestions = [
   {
