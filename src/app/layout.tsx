@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Orbitron, Inter, Share_Tech_Mono } from "next/font/google";
+import { Space_Grotesk, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
-const display = Orbitron({
+// Modern geometric sans — clean, technical, cinematic (Apple-meets-NASA)
+const display = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-display",
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const body = Inter({
@@ -13,9 +14,10 @@ const body = Inter({
   variable: "--font-body",
 });
 
-const mono = Share_Tech_Mono({
+// Restrained monospace for small data readouts and eyebrows
+const mono = IBM_Plex_Mono({
   subsets: ["latin"],
-  weight: "400",
+  weight: ["400", "500"],
   variable: "--font-mono",
 });
 
@@ -43,7 +45,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#030014",
+  themeColor: "#0b0e17",
   width: "device-width",
   initialScale: 1,
 };

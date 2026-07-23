@@ -3,9 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --space-black: #030014;
-  --electric: #4cc9f0;
-  --nebula: #7b2ff7;
+  --space-black: #04060d;
+  --accent: #4f7df9;
+  --accent-2: #8b5cf6;
+  --accent-deep: #2b4acb;
+  --rule: rgba(238, 241, 248, 0.12);
 }
 
 html {
@@ -15,94 +17,164 @@ html {
 
 body {
   background-color: var(--space-black);
-  color: #e8f0ff;
+  color: #eef1f8;
   overflow-x: hidden;
+  /* faint film grain so flat darks read as photographed, not rendered */
+  background-image: radial-gradient(rgba(238, 241, 248, 0.012) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+
+::selection {
+  background: rgba(139, 92, 246, 0.35);
+  color: #fff;
 }
 
 /* ---------- Scrollbar ---------- */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 11px;
 }
 ::-webkit-scrollbar-track {
-  background: #05060f;
+  background: #02040a;
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #2242a8, #7b2ff7);
+  background: #1d2742;
   border-radius: 8px;
+  border: 3px solid #02040a;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #3b6af0, #a855f7);
+  background: #2b3a63;
 }
 
-/* ---------- Glass / Holo UI ---------- */
+/* ---------- Surfaces ---------- */
 @layer components {
+  /* Quiet editorial card — hairline border, faint fill, natural elevation */
   .glass-panel {
-    @apply rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl;
+    @apply rounded-xl border border-star/10 bg-white/[0.015];
   }
   .holo-panel {
-    @apply glass-panel shadow-holo;
-    background-image: linear-gradient(
-      135deg,
-      rgba(76, 201, 240, 0.06),
-      rgba(123, 47, 247, 0.05) 50%,
-      rgba(255, 255, 255, 0.02)
-    );
+    @apply rounded-xl border border-star/10 bg-white/[0.02] shadow-holo;
   }
+  /* A single warm hairline at the top edge, no neon rim */
   .holo-border {
     position: relative;
   }
   .holo-border::before {
     content: "";
     position: absolute;
-    inset: -1px;
+    inset: 0;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(135deg, rgba(76, 201, 240, 0.6), transparent 40%, rgba(123, 47, 247, 0.6));
+    background: linear-gradient(180deg, rgba(224, 168, 96, 0.28), transparent 30%);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
   }
-  .text-glow-cyan {
-    text-shadow: 0 0 24px rgba(76, 201, 240, 0.6);
-  }
+
+  /* Glow classes — soft, cool */
+  .text-glow-cyan,
   .text-glow-nebula {
-    text-shadow: 0 0 24px rgba(168, 85, 247, 0.6);
+    text-shadow: 0 0 24px rgba(111, 141, 251, 0.35);
   }
   .text-glow-gold {
-    text-shadow: 0 0 20px rgba(245, 197, 66, 0.55);
+    text-shadow: 0 1px 12px rgba(224, 168, 96, 0.2);
   }
+
+  /* Signature gradient text (like LEARN. / INSPIRE. in the brand tagline) */
+  .text-grad {
+    @apply bg-brand-grad bg-clip-text text-transparent;
+  }
+
+  /* ---------- Buttons ---------- */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-display text-sm font-semibold uppercase tracking-widest text-space-black transition-all duration-300;
-    background: linear-gradient(135deg, #4cc9f0, #3b6af0);
-    box-shadow: 0 0 24px rgba(76, 201, 240, 0.35);
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-grad px-6 py-3 font-body text-sm font-semibold tracking-wide text-white shadow-glow transition-all duration-200;
   }
   .btn-primary:hover {
-    box-shadow: 0 0 40px rgba(76, 201, 240, 0.6);
-    transform: translateY(-2px);
+    filter: brightness(1.12);
+    transform: translateY(-1px);
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-electric/40 bg-electric/5 px-6 py-3 font-display text-sm font-semibold uppercase tracking-widest text-electric transition-all duration-300;
-  }
-  .btn-secondary:hover {
-    @apply border-electric bg-electric/15;
-    box-shadow: 0 0 28px rgba(76, 201, 240, 0.3);
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-star/20 bg-white/[0.03] px-6 py-3 font-body text-sm font-medium tracking-wide text-star transition-all duration-200 hover:border-electric/60 hover:text-electric;
   }
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 px-6 py-3 font-display text-sm font-semibold uppercase tracking-widest text-star/80 transition-all duration-300 hover:border-nebula-light/60 hover:text-white;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 font-body text-sm font-medium tracking-wide text-star/70 transition-colors duration-200 hover:text-electric;
   }
+
+  /* ---------- Forms ---------- */
   .input-holo {
-    @apply w-full rounded-xl border border-white/10 bg-space-panel/80 px-4 py-3 text-sm text-star placeholder-star/30 outline-none transition-all duration-300 focus:border-electric/60 focus:shadow-holo;
+    @apply w-full rounded-lg border border-star/[0.12] bg-white/[0.04] px-4 py-3 text-sm text-star placeholder-star/35 outline-none backdrop-blur-sm transition-all duration-200 focus:border-electric/70 focus:bg-white/[0.06];
   }
   .label-holo {
-    @apply mb-1.5 block font-mono text-[11px] uppercase tracking-[0.2em] text-electric/70;
+    @apply mb-1.5 block font-body text-xs font-medium tracking-wide text-star/60;
   }
+
+  /* ---------- Editorial eyebrow (rule + small caps label) ---------- */
   .section-tag {
-    @apply mb-4 inline-flex items-center gap-2 rounded-full border border-electric/30 bg-electric/5 px-4 py-1.5 font-mono text-[11px] uppercase tracking-[0.25em] text-electric;
+    @apply mb-5 inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.22em] text-electric;
+  }
+  .section-tag::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.7;
   }
 }
 
-/* ---------- Star field (CSS layers used behind content sections) ---------- */
+/* ---------- Atlas devices ---------- */
+/* Figure caption — the museum-label voice used under imagery and diagrams */
+.fig-caption {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(236, 231, 223, 0.45);
+}
+.fig-caption em {
+  font-family: var(--font-display);
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12px;
+  color: rgba(236, 231, 223, 0.6);
+}
+
+/* Corner registration ticks — frames content like a plate in an atlas */
+.plate-frame {
+  position: relative;
+}
+.plate-frame::before,
+.plate-frame::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  opacity: 0.5;
+}
+.plate-frame::before {
+  top: 0;
+  left: 0;
+  border-top: 1px solid var(--accent);
+  border-left: 1px solid var(--accent);
+}
+.plate-frame::after {
+  bottom: 0;
+  right: 0;
+  border-bottom: 1px solid var(--accent);
+  border-right: 1px solid var(--accent);
+}
+
+/* Dotted orbit rule — separates catalogue rows */
+.dotted-rule {
+  background-image: linear-gradient(90deg, rgba(236, 231, 223, 0.25) 1px, transparent 1px);
+  background-size: 7px 1px;
+  background-repeat: repeat-x;
+  height: 1px;
+}
+
+/* ---------- Star field (CSS layers behind content sections) ---------- */
 .stars-layer {
   position: absolute;
   inset: 0;
@@ -110,27 +182,17 @@ body {
   pointer-events: none;
 }
 
-/* ---------- Holo scanline sweep for panels ---------- */
-.scan-sweep {
-  position: relative;
-  overflow: hidden;
-}
-.scan-sweep::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 40%;
-  background: linear-gradient(180deg, transparent, rgba(76, 201, 240, 0.06), transparent);
-  animation: scanline 7s linear infinite;
-  pointer-events: none;
+/* Hairline divider helper */
+.rule-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rule), transparent);
 }
 
-/* ---------- High-tech dialog entry animations ---------- */
+/* ---------- Dialog entry animations (kept, softened) ---------- */
 @keyframes scaleUpFade {
   from {
     opacity: 0;
-    transform: scale(0.92) translateY(8px);
+    transform: scale(0.98) translateY(6px);
   }
   to {
     opacity: 1;
@@ -146,10 +208,9 @@ body {
   to {
     opacity: 1;
     backdrop-filter: blur(4px);
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: rgba(6, 8, 13, 0.78);
   }
 }
-
 .animate-scaleUpFade {
   animation: scaleUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

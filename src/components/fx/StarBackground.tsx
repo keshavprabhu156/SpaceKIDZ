@@ -26,9 +26,9 @@ function layerShadow(count: number, seed: number, color: string) {
 export default function StarBackground({ className = "" }: { className?: string }) {
   const layers = useMemo(
     () => [
-      { size: 1, shadow: layerShadow(120, 7, "rgba(232,240,255,0.7)"), speed: "0.1" },
-      { size: 1.6, shadow: layerShadow(60, 42, "rgba(76,201,240,0.6)"), speed: "0.18" },
-      { size: 2.2, shadow: layerShadow(24, 99, "rgba(168,85,247,0.5)"), speed: "0.28" },
+      { size: 1, shadow: layerShadow(120, 7, "rgba(236,231,223,0.55)"), speed: "0.1" },
+      { size: 1.5, shadow: layerShadow(55, 42, "rgba(236,231,223,0.35)"), speed: "0.18" },
+      { size: 2, shadow: layerShadow(20, 99, "rgba(224,168,96,0.45)"), speed: "0.28" },
     ],
     []
   );

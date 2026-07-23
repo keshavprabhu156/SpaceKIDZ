@@ -22,51 +22,50 @@ export default function ContactSection() {
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error ?? "Transmission failed");
+        setError(data.error ?? "Something went wrong. Please try again.");
         setStatus("error");
         return;
       }
       setStatus("sent");
     } catch {
-      setError("Connection lost. Check your uplink and retry.");
+      setError("We couldn’t reach the server. Check your connection and retry.");
       setStatus("error");
     }
   }
 
   return (
     <section id="contact" className="relative py-28">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="grid gap-12 lg:grid-cols-2">
+      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+        <div className="grid gap-14 lg:grid-cols-2">
           <div data-reveal>
-            <span className="section-tag">08 · Contact</span>
-            <h2 className="font-display text-3xl font-bold uppercase leading-tight tracking-wide text-star sm:text-4xl">
-              Open a <span className="text-electric">Channel</span>
+            <span className="section-tag">VIII · Correspondence</span>
+            <h2 className="font-display text-3xl font-medium leading-[1.1] tracking-tight text-star sm:text-4xl">
+              Bring the school to your <span className="text-grad">students.</span>
             </h2>
-            <p className="mt-5 max-w-md text-base leading-relaxed text-star/55">
+            <p className="mt-5 max-w-md text-base leading-relaxed text-star/60">
               Schools, ministries of education and partners — request a full curriculum
-              briefing, a pilot program for your institution, or teacher-training details.
+              briefing, a pilot programme for your institution, or teacher-training details.
             </p>
-            <ul className="mt-8 space-y-3 font-mono text-[12px] uppercase tracking-[0.15em] text-star/50">
-              <li>▸ missions@spacecurriculum.org — general</li>
-              <li>▸ schools@spacecurriculum.org — institutions & pilots</li>
-              <li>▸ partnerships@spacecurriculum.org — country partners</li>
+            <ul className="mt-8 space-y-2.5 text-sm text-star/60">
+              <li>missions@spacecurriculum.org — general enquiries</li>
+              <li>schools@spacecurriculum.org — institutions &amp; pilots</li>
+              <li>partnerships@spacecurriculum.org — country partners</li>
             </ul>
-            <p className="mt-8 rounded-xl border border-white/5 bg-white/[0.02] p-4 text-xs leading-relaxed text-star/40">
-              Response window: within 24 hours, any timezone. Live demos available for school
-              leadership teams every week.
+            <p className="mt-8 rounded-lg border border-star/10 bg-white/[0.015] p-4 text-sm leading-relaxed text-star/50">
+              We reply within 24 hours, any timezone. Live demonstrations for school
+              leadership teams are available every week.
             </p>
           </div>
 
-          <div data-reveal className="holo-panel holo-border p-8">
+          <div data-reveal className="rounded-xl border border-star/10 bg-space-navy/50 p-8">
             {status === "sent" ? (
               <div className="flex h-full flex-col items-center justify-center py-10 text-center">
-                <p className="text-4xl">📡</p>
-                <h3 className="mt-4 font-display text-lg font-bold uppercase tracking-wider text-star">
-                  Transmission Received
+                <span className="text-3xl text-electric">✦</span>
+                <h3 className="mt-4 font-display text-xl font-medium text-star">
+                  Message received
                 </h3>
-                <p className="mt-2 max-w-xs text-sm text-star/50">
-                  Thank you, {form.name.split(" ")[0]}. Mission Control will respond within 24
-                  hours.
+                <p className="mt-2 max-w-xs text-sm text-star/55">
+                  Thank you, {form.name.split(" ")[0]}. We’ll be in touch within 24 hours.
                 </p>
               </div>
             ) : (
@@ -103,7 +102,7 @@ export default function ContactSection() {
                   </p>
                 )}
                 <button type="submit" disabled={status === "sending"} className="btn-primary w-full disabled:opacity-60">
-                  {status === "sending" ? "Transmitting…" : "Transmit Message"}
+                  {status === "sending" ? "Sending…" : "Send message"}
                 </button>
               </form>
             )}
