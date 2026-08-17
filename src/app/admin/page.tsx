@@ -1,24 +1,12 @@
 import type { Metadata } from "next";
-import PortalShell from "@/components/portal/PortalShell";
-import Flag from "@/components/ui/Flag";
+import PortalLayout from "@/layouts/PortalLayout";
+import { adminSidebar } from "@/configs/portalSidebarConfig";
+import Flag from "@/components/common/Flag";
 import { getSession } from "@/utils/session";
 import { adminStats, recentSignups } from "@/data/dashboard";
 import { countries } from "@/data/global";
 
 export const metadata: Metadata = { title: "Admin — Mission Director Console" };
-
-const nav = [
-  { label: "Overview", icon: "◉", href: "/admin", active: true },
-  { label: "Students", icon: "◈", href: "/admin#students" },
-  { label: "Teachers", icon: "▣", href: "/admin#students" },
-  { label: "Schools", icon: "⬡", href: "/admin#countries" },
-  { label: "Countries", icon: "🌐", href: "/admin#countries" },
-  { label: "Curriculum CMS", icon: "☰", href: "/admin#cms" },
-  { label: "Question Bank", icon: "?", href: "/admin#cms" },
-  { label: "Games", icon: "🎮", href: "/admin#cms" },
-  { label: "Certificates", icon: "🏅", href: "/admin#cms" },
-  { label: "Notifications", icon: "📡", href: "/admin#cms" },
-];
 
 const statCards = [
   { label: "Total Students", value: adminStats.students.toLocaleString(), accent: "text-electric" },
@@ -41,12 +29,12 @@ const cmsModules = [
 export default async function AdminPanel() {
   const session = await getSession();
   return (
-    <PortalShell
+    <PortalLayout
       title="Director Console"
       role="Administrator"
       userName={session?.name ?? "Mission Director"}
       userId={session?.sub ?? "ISC-A-XXXX-XXXXXX"}
-      nav={nav}
+      nav={adminSidebar}
     >
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
@@ -145,6 +133,6 @@ export default async function AdminPanel() {
           ))}
         </div>
       </div>
-    </PortalShell>
+    </PortalLayout>
   );
 }

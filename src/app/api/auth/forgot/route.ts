@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { findByEmail } from "@/services/users";
+import { findByEmail } from "@/services/userService";
 
 /**
  * Password-reset request. Always answers 200 to prevent account enumeration.

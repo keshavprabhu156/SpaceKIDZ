@@ -1,118 +1,82 @@
 "use client";
 
 import Link from "next/link";
-import dynamic from "next/dynamic";
-import { motion } from "framer-motion";
-
-const HeroScene = dynamic(() => import("@/components/three/HeroScene"), {
-  ssr: false,
-  loading: () => (
-    <div className="flex h-full w-full items-center justify-center">
-      <div className="flex flex-col items-center gap-3">
-        <div className="h-9 w-9 animate-spin rounded-full border border-star/15 border-t-electric/70" />
-        <p className="font-mono text-[11px] tracking-wide text-star/40">Preparing the plate…</p>
-      </div>
-    </div>
-  ),
-});
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 22 },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: 0.2 + i * 0.14, duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
-  }),
-};
+import SplitText from "@/components/common/SplitText";
+import SpaceBackdrop from "@/components/fx/SpaceBackdrop";
 
 export default function Hero() {
   return (
-    <section className="relative h-[100svh] min-h-[680px] w-full overflow-hidden bg-space-black">
-      {/* Photographic backdrop — Earth, Milky Way, lunar surface */}
-      <img
-        src="/space.jpg"
-        alt=""
-        draggable={false}
-        className="absolute inset-0 z-0 h-full w-full select-none object-cover"
-      />
-
-      {/* Interactive astronaut on a transparent canvas above the photo */}
-      <div className="absolute inset-0 z-[1]">
-        <HeroScene />
+    <section className="relative h-[100svh] min-h-[660px] w-full overflow-hidden bg-space-black">
+      {/* Deep-space backdrop — canvas starfield, painted once at native pixel
+          density. Safe to scale on scroll: it's a static raster, so the
+          compositor treats it as an image (no per-frame re-upload). */}
+      <div
+        data-hero-media
+        className="absolute inset-0 z-0 will-change-transform"
+        style={{ transformOrigin: "62% 45%" }}
+      >
+        <SpaceBackdrop resolutionScale={1.4} />
       </div>
 
-      {/* Cinematic vignette */}
-      <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-space-black via-space-black/20 to-transparent" />
-      <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-space-black/85 via-space-black/25 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-28 bg-gradient-to-b from-space-black/70 to-transparent" />
+      {/* Legibility washes */}
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-space-black/85 via-space-black/25 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-40 bg-gradient-to-t from-space-black to-transparent" />
 
-      {/* Copy — anchored low-left */}
-      <div className="absolute inset-x-0 bottom-0 z-20">
-        <div className="mx-auto max-w-6xl px-5 pb-20 sm:px-8 sm:pb-24">
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={0}
-            className="font-mono text-[11px] uppercase tracking-[0.3em] text-electric"
-          >
-            Space Education Portal · Grades 4–10
-          </motion.p>
+      {/* Copy */}
+      <div
+        data-hero-copy
+        className="relative z-10 mx-auto flex h-full max-w-6xl flex-col justify-center px-5 sm:px-8"
+      >
+        <div className="max-w-2xl">
+          <p className="animate-[fadeIn_1s_ease-out_forwards] opacity-0 [animation-delay:.2s] mb-6 inline-flex items-center gap-2 rounded-full border border-electric/25 bg-electric/10 px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-electric">
+            <span className="h-1.5 w-1.5 rounded-full bg-electric" />
+            Space science for Grades 4–10
+          </p>
 
-          <motion.h1
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={1}
-            className="mt-5 max-w-3xl font-display text-5xl font-bold leading-[1.02] tracking-tight text-star sm:text-7xl"
-          >
-            Explore. <span className="text-grad">Learn.</span>
-            <br />
-            <span className="text-grad">Inspire.</span>
-          </motion.h1>
+          <h1 className="font-display text-[2.9rem] font-bold leading-[1.02] tracking-tight text-star sm:text-6xl md:text-7xl">
+            <SplitText
+              immediate
+              segments={[
+                { text: "Learn the universe" },
+                { text: "by exploring it.", grad: true },
+              ]}
+            />
+          </h1>
 
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={2}
-            className="mt-6 max-w-lg text-[15px] leading-relaxed text-star/70"
-          >
-            Your journey to the stars begins here. A seven-year curriculum in astronomy,
-            orbital mechanics and spacecraft engineering — taught through interactive
-            missions in classrooms across twelve countries.
-          </motion.p>
+          <p className="animate-[fadeIn_1s_ease-out_forwards] opacity-0 [animation-delay:1s] mt-7 max-w-lg text-base leading-relaxed text-star/70 sm:text-lg">
+            A complete seven-year space science curriculum — taught through interactive
+            3D lessons, real physics simulations and weekly assessments, in classrooms
+            across twelve countries.
+          </p>
 
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={3}
-            className="mt-9 flex flex-wrap items-center gap-6"
-          >
+          <div className="animate-[fadeIn_1s_ease-out_forwards] opacity-0 [animation-delay:1.2s] mt-10 flex flex-wrap items-center gap-4">
             <Link href="/register" className="btn-primary">
-              Begin your journey
+              Start learning free
             </Link>
-            <Link
-              href="/curriculum"
-              className="text-sm text-star/70 underline-offset-4 transition-colors hover:text-electric hover:underline"
-            >
-              Explore the curriculum →
+            <Link href="/demo" className="btn-secondary">
+              Try a sample lesson
             </Link>
-          </motion.div>
+          </div>
+
+          <p className="animate-[fadeIn_1s_ease-out_forwards] opacity-0 [animation-delay:1.4s] mt-8 text-xs text-star/45">
+            Trusted by 262 schools · Aligned to international science standards
+          </p>
         </div>
       </div>
 
       {/* Scroll cue */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.8 }}
-        className="absolute bottom-7 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2"
-      >
-        <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-star/35">Scroll</span>
-        <div className="h-8 w-px bg-gradient-to-b from-star/40 to-transparent" />
-      </motion.div>
+      <div className="animate-[fadeIn_1s_ease-out_forwards] opacity-0 [animation-delay:1.8s] absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2">
+        <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-star/40">
+          Scroll
+        </span>
+        <span className="relative flex h-9 w-5 justify-center rounded-full border border-star/25 pt-1.5">
+          <span className="h-1.5 w-1 animate-bounce rounded-full bg-electric" />
+        </span>
+      </div>
+
+      <style>{`
+        @keyframes fadeIn { to { opacity: 1; } }
+      `}</style>
     </section>
   );
 }

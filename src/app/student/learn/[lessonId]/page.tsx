@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import PortalShell from "@/components/portal/PortalShell";
+import PortalLayout from "@/layouts/PortalLayout";
+import { studentSidebar } from "@/configs/portalSidebarConfig";
 import LessonContent from "@/components/learn/LessonContent";
 import LessonFooter from "@/components/learn/LessonFooter";
 import { findLesson, lessonTypeMeta } from "@/data/curriculum";
@@ -17,15 +18,6 @@ export async function generateMetadata({
   return { title: ref ? `${ref.lesson.title} — Lesson` : "Lesson" };
 }
 
-const nav = [
-  { label: "Mission Control", icon: "◉", href: "/student" },
-  { label: "My Curriculum", icon: "◈", href: "/curriculum", active: true },
-  { label: "Weekly Tests", icon: "▣", href: "/student/tests" },
-  { label: "Game Deck", icon: "🎮", href: "/games" },
-  { label: "Achievements", icon: "🏅", href: "/student#achievements" },
-  { label: "Leaderboard", icon: "⬆", href: "/student#leaderboard" },
-];
-
 export default async function LessonPage({
   params,
 }: {
@@ -40,12 +32,12 @@ export default async function LessonPage({
   const gradeHref = `/curriculum/${ref.grade.grade}`;
 
   return (
-    <PortalShell
+    <PortalLayout
       title="Mission Control"
       role={`Student · Grade ${session?.grade ?? ref.grade.grade}`}
       userName={session?.name ?? "Cadet"}
       userId={session?.sub ?? "ISC-S-XXXX-XXXXXX"}
-      nav={nav}
+      nav={studentSidebar}
     >
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-star/40">
@@ -94,6 +86,6 @@ export default async function LessonPage({
         nextId={ref.next?.id ?? null}
         gradeHref={gradeHref}
       />
-    </PortalShell>
+    </PortalLayout>
   );
 }

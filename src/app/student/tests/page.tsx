@@ -1,18 +1,10 @@
 import type { Metadata } from "next";
-import PortalShell from "@/components/portal/PortalShell";
+import PortalLayout from "@/layouts/PortalLayout";
+import { studentSidebar } from "@/configs/portalSidebarConfig";
 import SampleTest from "@/components/demo/SampleTest";
 import { getSession } from "@/utils/session";
 
 export const metadata: Metadata = { title: "Weekly Tests — Mission Assessments" };
-
-const nav = [
-  { label: "Mission Control", icon: "◉", href: "/student" },
-  { label: "My Curriculum", icon: "◈", href: "/curriculum" },
-  { label: "Weekly Tests", icon: "▣", href: "/student/tests", active: true },
-  { label: "Game Deck", icon: "🎮", href: "/games" },
-  { label: "Achievements", icon: "🏅", href: "/student#achievements" },
-  { label: "Leaderboard", icon: "⬆", href: "/student#leaderboard" },
-];
 
 const history = [
   { id: 1, title: "Weekly Test 3 — Anatomy of a Satellite", score: 85, date: "Last Friday" },
@@ -23,12 +15,12 @@ const history = [
 export default async function WeeklyTestsPage() {
   const session = await getSession();
   return (
-    <PortalShell
+    <PortalLayout
       title="Mission Control"
       role={`Student · Grade ${session?.grade ?? 6}`}
       userName={session?.name ?? "Cadet"}
       userId={session?.sub ?? "ISC-S-XXXX-XXXXXX"}
-      nav={nav}
+      nav={studentSidebar}
     >
       <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-electric/70">
         ▣ Assessment Bay
@@ -81,6 +73,6 @@ export default async function WeeklyTestsPage() {
           </div>
         </div>
       </div>
-    </PortalShell>
+    </PortalLayout>
   );
 }

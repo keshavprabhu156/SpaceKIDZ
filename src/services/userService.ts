@@ -7,36 +7,10 @@
 import * as bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
 import { countries } from "@/data/global";
-import type { Role } from "./auth";
+import type { Role, StudentProfile, User } from "@/types/user";
 
-export interface StudentProfile {
-  fullName: string;
-  dateOfBirth: string;
-  gender: string;
-  grade: number;
-  schoolName: string;
-  schoolId?: string;
-  phone: string;
-  parentName: string;
-  parentContact: string;
-  city: string;
-  state: string;
-  country: string;
-  language: string;
-  timezone: string;
-}
-
-export interface User {
-  id: string; // Student/Teacher/Admin ID, e.g. ISC-S-2026-000123
-  email: string;
-  passwordHash: string;
-  salt: string; // Empty string for compatibility with legacy schema (bcrypt has built-in salt)
-  role: Role;
-  name: string;
-  grade?: number;
-  profile?: StudentProfile;
-  createdAt: string;
-}
+// Re-exported so existing call sites importing these from the service keep working.
+export type { StudentProfile, User };
 
 function toAppRole(dbRole: string): Role {
   if (dbRole === "STUDENT") return "student";

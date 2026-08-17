@@ -1,16 +1,42 @@
 import { NextResponse } from "next/server";
-import { findByEmail, verifyPassword } from "@/services/users";
-import { signSession, SESSION_COOKIE } from "@/services/auth";
+import { findByEmail, verifyPassword } from "@/services/userService";
+import { signSession, SESSION_COOKIE } from "@/services/tokenService";
+import { validateLogin } from "@/validation/authValidation";
+import { clientIp, rateLimit } from "@/utils/rateLimit";
+
+// 10 attempts per IP per 5 minutes, and 5 per account per 15 minutes — enough
+// for a forgetful student, far too slow to brute-force a password.
+const IP_LIMIT = { max: 10, windowMs: 5 * 60 * 1000 };
+const ACCOUNT_LIMIT = { max: 5, windowMs: 15 * 60 * 1000 };
 
 export async function POST(req: Request) {
   const { email, password, remember } = await req.json().catch(() => ({}));
 
-  if (!email || !password) {
-    return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
+  const invalid = validateLogin({ email, password });
+  if (invalid) {
+    return NextResponse.json({ error: invalid }, { status: 400 });
+  }
+
+  const ip = clientIp(req);
+  const byIp = rateLimit(`login:ip:${ip}`, IP_LIMIT.max, IP_LIMIT.windowMs);
+  const byAccount = rateLimit(
+    `login:acct:${String(email).toLowerCase().trim()}`,
+    ACCOUNT_LIMIT.max,
+    ACCOUNT_LIMIT.windowMs
+  );
+
+  if (!byIp.allowed || !byAccount.allowed) {
+    const retryAfter = Math.max(byIp.retryAfter, byAccount.retryAfter);
+    return NextResponse.json(
+      { error: `Too many attempts. Try again in ${retryAfter} seconds.` },
+      { status: 429, headers: { "Retry-After": String(retryAfter) } }
+    );
   }
 
   const user = await findByEmail(email);
   if (!user || !(await verifyPassword(user, password))) {
+    // Deliberately identical message for unknown email vs wrong password, so
+    // the endpoint can't be used to discover which accounts exist.
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
   }
 

@@ -1,14 +1,7 @@
-export interface Game {
-  id: string;
-  title: string;
-  description: string;
-  category: "build" | "pilot" | "explore" | "puzzle";
-  difficulty: 1 | 2 | 3;
-  xp: number;
-  minGrade: number;
-  playable: boolean; // playable in-browser today; others ship with curriculum content
-  icon: string;
-}
+import type { Game } from "@/types/game";
+
+// Re-exported for existing call sites.
+export type { Game };
 
 export const games: Game[] = [
   { id: "space-quiz", title: "Space Quiz Challenge", description: "Race the clock across the cosmos. Answer fast, climb the galactic leaderboard.", category: "puzzle", difficulty: 1, xp: 150, minGrade: 4, playable: true, icon: "🛰" },

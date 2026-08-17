@@ -1,17 +1,18 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ScrollFX from "@/components/fx/ScrollFX";
-import StarBackground from "@/components/fx/StarBackground";
 import Hero from "@/components/sections/Hero";
+import LearningShowcase from "@/components/sections/LearningShowcase";
+import GradeJourney from "@/components/sections/GradeJourney";
+import AudienceSection from "@/components/sections/AudienceSection";
 import ContactSection from "@/components/sections/ContactSection";
 import {
-  AboutSection,
-  MissionSection,
-  CurriculumSection,
-  DemoSection,
+  TrustBar,
+  WhySection,
   GamesSection,
   AchievementsSection,
-  CountriesSection,
+  NetworkSection,
+  FAQSection,
   FinalCTA,
 } from "@/components/sections/LandingSections";
 
@@ -20,21 +21,20 @@ export default function LandingPage() {
     <main className="relative min-h-screen bg-space-black">
       <ScrollFX />
       <Navbar />
+
       <Hero />
-      <div className="relative">
-        <StarBackground />
-        <div className="relative">
-          <AboutSection />
-          <MissionSection />
-          <CurriculumSection />
-          <DemoSection />
-          <GamesSection />
-          <AchievementsSection />
-          <CountriesSection />
-          <ContactSection />
-          <FinalCTA />
-        </div>
-      </div>
+      <TrustBar />
+      <WhySection />
+      <LearningShowcase />
+      <GradeJourney />
+      <AudienceSection />
+      <GamesSection />
+      <AchievementsSection />
+      <NetworkSection />
+      <FAQSection />
+      <ContactSection />
+      <FinalCTA />
+
       <Footer />
     </main>
   );

@@ -18,12 +18,12 @@ export default function Footer() {
           </div>
 
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-star/40">The school</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-star/40">Explore</p>
             <ul className="mt-4 space-y-2.5 text-sm text-star/60">
-              <li><Link href="/curriculum" className="hover:text-electric">Syllabus</Link></li>
-              <li><Link href="/demo" className="hover:text-electric">The observatory</Link></li>
-              <li><Link href="/games" className="hover:text-electric">Practical exercises</Link></li>
-              <li><Link href="/register" className="hover:text-electric">Admissions</Link></li>
+              <li><Link href="/curriculum" className="hover:text-electric">Curriculum</Link></li>
+              <li><Link href="/demo" className="hover:text-electric">Live demo</Link></li>
+              <li><Link href="/games" className="hover:text-electric">Games</Link></li>
+              <li><Link href="/register" className="hover:text-electric">Create an account</Link></li>
               <li><Link href="/login" className="hover:text-electric">Teacher portal</Link></li>
             </ul>
           </div>

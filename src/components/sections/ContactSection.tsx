@@ -1,46 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import useContactForm from "@/hooks/useContactForm";
 
 export default function ContactSection() {
-  const [form, setForm] = useState({ name: "", email: "", organization: "", message: "" });
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
-  const [error, setError] = useState<string | null>(null);
-
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm((f) => ({ ...f, [k]: e.target.value }));
-
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    setStatus("sending");
-    setError(null);
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.error ?? "Something went wrong. Please try again.");
-        setStatus("error");
-        return;
-      }
-      setStatus("sent");
-    } catch {
-      setError("We couldn’t reach the server. Check your connection and retry.");
-      setStatus("error");
-    }
-  }
+  const { form, set, submit, status, error } = useContactForm();
 
   return (
     <section id="contact" className="relative py-28">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <div className="grid gap-14 lg:grid-cols-2">
           <div data-reveal>
-            <span className="section-tag">VIII · Correspondence</span>
-            <h2 className="font-display text-3xl font-medium leading-[1.1] tracking-tight text-star sm:text-4xl">
-              Bring the school to your <span className="text-grad">students.</span>
+            <span className="section-tag">Contact us</span>
+            <h2 className="h-section">
+              Bring space science to your <span className="text-grad">school.</span>
             </h2>
             <p className="mt-5 max-w-md text-base leading-relaxed text-star/60">
               Schools, ministries of education and partners — request a full curriculum
@@ -57,7 +29,7 @@ export default function ContactSection() {
             </p>
           </div>
 
-          <div data-reveal className="rounded-xl border border-star/10 bg-space-navy/50 p-8">
+          <div data-reveal className="rounded-2xl border border-star/10 bg-space-navy/60 p-8">
             {status === "sent" ? (
               <div className="flex h-full flex-col items-center justify-center py-10 text-center">
                 <span className="text-3xl text-electric">✦</span>

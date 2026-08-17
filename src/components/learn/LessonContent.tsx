@@ -26,36 +26,64 @@ const OrbitSimulator = dynamic(() => import("@/components/demo/OrbitSimulator"),
   ),
 });
 
-/** Placeholder player for video/animation lessons until media assets upload.
- *  The layout (player + storyboard) matches the production lesson design. */
-function MediaPlaceholder({ title, briefing, kind }: { title: string; briefing: string; kind: string }) {
+/**
+ * Reading lesson — the primary format, since the curriculum is built on book
+ * material. Renders the chapter text in a comfortable reading measure with a
+ * sidebar of objectives.
+ *
+ * `body` holds the book content. Until the Space Science text is loaded, the
+ * briefing stands in for it.
+ */
+function ReadingContent({
+  title,
+  briefing,
+  body,
+}: {
+  title: string;
+  briefing: string;
+  body?: string[];
+}) {
+  const paragraphs = body?.length ? body : null;
+
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
-      <div className="holo-panel relative flex aspect-video items-center justify-center overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 bg-holo-grid bg-[size:44px_44px] opacity-25" />
-        <div className="relative text-center">
-          <button
-            aria-label={`Play ${kind}`}
-            className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-electric/50 bg-electric/10 text-3xl text-electric shadow-holo-strong transition-all hover:scale-105 hover:bg-electric/20"
-          >
-            ▶
-          </button>
-          <p className="mt-5 font-display text-sm font-bold uppercase tracking-wider text-star">{title}</p>
-          <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.25em] text-star/40">
-            {kind} · content package uploads with curriculum assets
-          </p>
+    <div className="grid gap-6 lg:grid-cols-[1fr_290px]">
+      <article className="holo-panel p-7 sm:p-9">
+        <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-electric/70">
+          Reading
+        </p>
+        <h3 className="mt-2 font-display text-2xl font-bold leading-snug text-star">
+          {title}
+        </h3>
+
+        {/* max-w-prose keeps the line length readable (~70 characters) */}
+        <div className="mt-6 max-w-prose space-y-4 text-[15px] leading-[1.75] text-star/75">
+          {paragraphs ? (
+            paragraphs.map((para, i) => <p key={i}>{para}</p>)
+          ) : (
+            <>
+              <p>{briefing}</p>
+              <p className="rounded-lg border border-star/10 bg-white/[0.02] p-4 text-sm text-star/50">
+                The full chapter text from <em>Space Science</em> loads here once the
+                book content is added for this lesson.
+              </p>
+            </>
+          )}
         </div>
-      </div>
-      <div className="holo-panel p-6">
-        <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-electric/70">Mission Briefing</p>
-        <p className="mt-3 text-sm leading-relaxed text-star/65">{briefing}</p>
-        <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.25em] text-electric/70">You will learn to</p>
-        <ul className="mt-2 space-y-1.5 text-xs text-star/55">
+      </article>
+
+      <aside className="holo-panel h-fit p-6">
+        <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-electric/70">
+          You will learn to
+        </p>
+        <ul className="mt-3 space-y-2 text-xs leading-relaxed text-star/60">
           <li>▸ Explain the key idea in your own words</li>
           <li>▸ Connect it to a real mission example</li>
           <li>▸ Pass the checkpoint at the end of this chapter</li>
         </ul>
-      </div>
+        <p className="mt-5 border-t border-star/10 pt-4 text-xs text-star/45">
+          Take your time. You can return to this page any time from your curriculum.
+        </p>
+      </aside>
     </div>
   );
 }
@@ -107,10 +135,13 @@ export default function LessonContent({
   type,
   title,
   briefing,
+  body,
 }: {
   type: LessonType;
   title: string;
   briefing: string;
+  /** Book text for reading lessons, one entry per paragraph. */
+  body?: string[];
 }) {
   switch (type) {
     case "3d-model":
@@ -119,10 +150,8 @@ export default function LessonContent({
       return <OrbitSimulator />;
     case "quiz":
       return <SampleTest />;
-    case "video":
-      return <MediaPlaceholder title={title} briefing={briefing} kind="Video" />;
-    case "animation":
-      return <MediaPlaceholder title={title} briefing={briefing} kind="Animation" />;
+    case "reading":
+      return <ReadingContent title={title} briefing={briefing} body={body} />;
     default:
       return <InstructionCard title={title} briefing={briefing} kind={type} />;
   }

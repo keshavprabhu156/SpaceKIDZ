@@ -1,11 +1,14 @@
 // International Space Curriculum — production data model.
 //
-// The app currently runs on an in-memory dev store (src/lib/users.ts) and
-// static content modules (src/data/*). This schema is the target model those
-// modules already mirror — wiring it up means:
-//   1. npm i prisma @prisma/client && npx prisma migrate dev
-//   2. Replace src/lib/users.ts internals with Prisma queries (same signatures)
-//   3. Serve src/data shapes from /api/curriculum etc.
+// This is LIVE: the app reads and writes this schema through Prisma against
+// PostgreSQL (Supabase). Auth, weekly tests and progress all run on it.
+//
+// Multi-tenancy: every school is a `School` row. Teachers, classes and students
+// all hang off it, so ALL queries must be scoped by schoolId — a teacher must
+// never be able to read another school's data. See services/teacherService.ts.
+//
+// Changing this file: edit the model, then run `npm run db:migrate` (never hand-
+// write SQL) and commit the generated migration folder.
 
 generator client {
   provider = "prisma-client-js"
@@ -19,7 +22,8 @@ datasource db {
 enum Role {
   STUDENT
   TEACHER
-  ADMIN
+  SCHOOL_ADMIN // principal / coordinator — manages ONE school
+  ADMIN // platform owner — manages all schools
 }
 
 model User {
@@ -54,9 +58,17 @@ model Student {
   xp            Int      @default(0)
   spaceCoins    Int      @default(0)
   streakDays    Int      @default(0)
+  // Last time the student opened a lesson or test — powers the teacher's
+  // "needs attention" list.
+  lastActiveAt  DateTime?
+  // A student belongs to one class (section). Without this a teacher has no
+  // roster, so every class view depends on it.
+  classId       String?
+  class         Class?   @relation(fields: [classId], references: [id])
   progress      LessonProgress[]
   testAttempts  TestAttempt[]
   badges        StudentBadge[]
+  attendance    Attendance[]
 }
 
 model Teacher {
@@ -77,21 +89,34 @@ model Country {
 model School {
   id          String    @id @default(cuid())
   name        String
+  city        String?
   countryCode String
   country     Country   @relation(fields: [countryCode], references: [code])
+  // Teachers self-enrol with this code instead of being created by hand.
+  teacherCode String    @unique
+  academicYear String?  // e.g. "2026-27"
+  createdAt   DateTime  @default(now())
   students    Student[]
   teachers    Teacher[]
   classes     Class[]
+  announcements Announcement[]
 }
 
 model Class {
   id        String   @id @default(cuid())
-  name      String
+  name      String // e.g. "Section A"
   grade     Int
   schoolId  String
   school    School   @relation(fields: [schoolId], references: [id])
   teacherId String
   teacher   Teacher  @relation(fields: [teacherId], references: [userId])
+  // Students join with this code.
+  joinCode  String   @unique
+  createdAt DateTime @default(now())
+  students  Student[]
+  assignments Assignment[]
+  attendance  Attendance[]
+  announcements Announcement[]
 }
 
 // ---------------- Curriculum ----------------
@@ -124,16 +149,19 @@ model Chapter {
   hasWeeklyTest Boolean  @default(true)
   lessons       Lesson[]
   tests         WeeklyTest[]
+  assignments   Assignment[]
 }
 
 model Lesson {
   id        String  @id
   title     String
-  type      String // video | animation | 3d-model | activity | experiment | simulation | reading | quiz
+  type      String // reading | 3d-model | activity | experiment | simulation | quiz
+  //                  (no video/animation — the curriculum is book material + quizzes)
+  body      String? // book text for `reading` lessons
   duration  Int
   xp        Int
   order     Int
-  contentUrl String? // cloud-storage pointer for video/GLTF/interactive bundle
+  contentUrl String? // cloud-storage pointer for figures/diagrams or an interactive bundle
   chapterId String
   chapter   Chapter @relation(fields: [chapterId], references: [id])
   progress  LessonProgress[]
@@ -159,6 +187,7 @@ model WeeklyTest {
   chapter   Chapter       @relation(fields: [chapterId], references: [id])
   questions Question[]
   attempts  TestAttempt[]
+  assignments Assignment[]
 }
 
 model Question {
@@ -199,4 +228,49 @@ model StudentBadge {
   earnedAt  DateTime @default(now())
 
   @@id([studentId, badgeId])
+}
+
+// ---------------- Teaching workflow ----------------
+// The teacher sidebar already links to these features; these are the tables
+// behind them.
+
+/** A chapter or test given to a class, with a deadline. */
+model Assignment {
+  id        String      @id @default(cuid())
+  classId   String
+  class     Class       @relation(fields: [classId], references: [id])
+  title     String
+  chapterId String?
+  chapter   Chapter?    @relation(fields: [chapterId], references: [id])
+  testId    String?
+  test      WeeklyTest? @relation(fields: [testId], references: [id])
+  dueAt     DateTime
+  createdAt DateTime    @default(now())
+}
+
+model Attendance {
+  id        String   @id @default(cuid())
+  classId   String
+  class     Class    @relation(fields: [classId], references: [id])
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [userId])
+  date      DateTime // date only; time component unused
+  present   Boolean
+  note      String?
+
+  // One record per student per class per day.
+  @@unique([classId, studentId, date])
+}
+
+/** Posted to one class, or to the whole school when classId is null. */
+model Announcement {
+  id        String   @id @default(cuid())
+  schoolId  String
+  school    School   @relation(fields: [schoolId], references: [id])
+  classId   String?
+  class     Class?   @relation(fields: [classId], references: [id])
+  authorId  String // User.id of the teacher or school admin
+  title     String
+  body      String
+  createdAt DateTime @default(now())
 }

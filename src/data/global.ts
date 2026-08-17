@@ -1,10 +1,9 @@
-export interface Country {
-  code: string;
-  name: string;
-  flag: string;
-  students: number;
-  schools: number;
-}
+import type { Country } from "@/types/country";
+import type { Achievement } from "@/types/achievement";
+
+// Re-exported for existing call sites.
+export type { Country, Achievement };
+
 
 export const countries: Country[] = [
   { code: "IN", name: "India", flag: "🇮🇳", students: 12400, schools: 86 },
@@ -46,13 +45,6 @@ export const timezones = [
   "UTC+10:00 (Sydney)",
 ] as const;
 
-export interface Achievement {
-  id: string;
-  title: string;
-  description: string;
-  tier: "bronze" | "silver" | "gold" | "platinum";
-  icon: string;
-}
 
 export const achievements: Achievement[] = [
   { id: "first-launch", title: "First Launch", description: "Complete your very first lesson", tier: "bronze", icon: "🚀" },

@@ -1,53 +1,75 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { verifySession, SESSION_COOKIE } from "@/services/auth";
-import { prisma } from "@/services/prisma";
+import { getSession } from "@/utils/session";
+import {
+  hasAttempted,
+  recordAttempt,
+  scoreAttempt,
+} from "@/services/weeklyTestService";
 
+/**
+ * POST /api/student/tests/submit
+ *
+ * Takes the student's ANSWERS (not a score) and recomputes the score from the
+ * answer key in the database. The client cannot influence XP:
+ *   - a forged `score` field is ignored entirely;
+ *   - a second attempt at the same test is rejected, so XP can't be farmed by
+ *     resubmitting.
+ */
 export async function POST(req: Request) {
-  const jar = await cookies();
-  const token = jar.get(SESSION_COOKIE)?.value;
-  const session = token ? await verifySession(token) : null;
-
+  const session = await getSession();
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  try {
-    const { testId, score, answers } = await req.json().catch(() => ({}));
+  const body = await req.json().catch(() => ({}));
+  const { testId, answers } = body as {
+    testId?: string;
+    answers?: Record<string, unknown>;
+  };
 
-    if (!testId || score === undefined) {
-      return NextResponse.json({ error: "Missing testId or score" }, { status: 400 });
+  if (!testId) {
+    return NextResponse.json({ error: "Missing testId" }, { status: 400 });
+  }
+  if (!answers || typeof answers !== "object") {
+    return NextResponse.json({ error: "Missing answers" }, { status: 400 });
+  }
+
+  try {
+    // One graded attempt per test, per student.
+    const existing = await hasAttempted(session.sub, testId);
+    if (existing) {
+      return NextResponse.json(
+        {
+          error: "You have already completed this test.",
+          alreadyAttempted: true,
+          score: existing.score,
+        },
+        { status: 409 }
+      );
     }
 
-    // Save the attempt record
-    const attempt = await prisma.testAttempt.create({
-      data: {
-        studentId: session.sub,
-        testId,
-        score,
-        answers: answers || {},
-      },
-    });
+    // Authoritative scoring — from the database, never from the request.
+    const { score, total } = await scoreAttempt(testId, answers);
+    if (total === 0) {
+      return NextResponse.json({ error: "Test not found" }, { status: 404 });
+    }
 
-    // Award XP and SpaceCoins based on correct answer counts
-    const xpReward = score * 50; // e.g. 2 correct answers = 100 XP
-    const coinReward = score * 5; // e.g. 2 correct answers = 10 SpaceCoins
-
-    await prisma.student.update({
-      where: { userId: session.sub },
-      data: {
-        xp: { increment: xpReward },
-        spaceCoins: { increment: coinReward },
-      },
-    });
+    const { xpAwarded, coinsAwarded } = await recordAttempt(
+      session.sub,
+      testId,
+      score,
+      answers
+    );
 
     return NextResponse.json({
       ok: true,
-      xpAwarded: xpReward,
-      coinsAwarded: coinReward,
+      score,
+      total,
+      xpAwarded,
+      coinsAwarded,
     });
   } catch (error) {
-    console.error("Error submitting test result:", error);
+    console.error("[tests/submit] failed:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

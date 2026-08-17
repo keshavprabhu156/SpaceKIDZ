@@ -1,50 +1,19 @@
 import { NextResponse } from "next/server";
-import { createStudent, type StudentProfile } from "@/services/users";
-import { signSession, SESSION_COOKIE } from "@/services/auth";
-
-const required: (keyof StudentProfile)[] = [
-  "fullName",
-  "dateOfBirth",
-  "gender",
-  "grade",
-  "schoolName",
-  "phone",
-  "parentName",
-  "parentContact",
-  "city",
-  "state",
-  "country",
-  "language",
-  "timezone",
-];
+import { createStudent } from "@/services/userService";
+import { signSession, SESSION_COOKIE } from "@/services/tokenService";
+import { validateRegistration } from "@/validation/authValidation";
+import type { RegisterPayload } from "@/types/user";
 
 export async function POST(req: Request) {
-  const body = await req.json().catch(() => null);
-  if (!body) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  const body = (await req.json().catch(() => null)) as RegisterPayload | null;
 
-  const { email, password, profile } = body as {
-    email?: string;
-    password?: string;
-    profile?: StudentProfile;
-  };
+  const invalid = validateRegistration(body);
+  if (invalid) {
+    return NextResponse.json({ error: invalid }, { status: 400 });
+  }
 
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return NextResponse.json({ error: "A valid email is required" }, { status: 400 });
-  }
-  if (!password || password.length < 8) {
-    return NextResponse.json({ error: "Password must be at least 8 characters" }, { status: 400 });
-  }
-  if (!profile) return NextResponse.json({ error: "Profile is required" }, { status: 400 });
-
-  for (const field of required) {
-    if (profile[field] === undefined || profile[field] === "") {
-      return NextResponse.json({ error: `Missing field: ${field}` }, { status: 400 });
-    }
-  }
+  const { email, password, profile } = body!;
   const grade = Number(profile.grade);
-  if (grade < 4 || grade > 10) {
-    return NextResponse.json({ error: "Grade must be between 4 and 10" }, { status: 400 });
-  }
 
   try {
     const user = await createStudent({ email, password, profile: { ...profile, grade } });

@@ -7,46 +7,17 @@
  * source requires no component changes.
  */
 
-export type LessonType =
-  | "video"
-  | "animation"
-  | "3d-model"
-  | "activity"
-  | "experiment"
-  | "simulation"
-  | "reading"
-  | "quiz";
+import type {
+  Chapter,
+  Grade,
+  Lesson,
+  LessonRef,
+  LessonType,
+  Term,
+} from "@/types/curriculum";
 
-export interface Lesson {
-  id: string;
-  title: string;
-  type: LessonType;
-  duration: number; // minutes
-  xp: number;
-}
-
-export interface Chapter {
-  id: string;
-  title: string;
-  description: string;
-  lessons: Lesson[];
-  hasWeeklyTest: boolean;
-}
-
-export interface Term {
-  id: string;
-  title: string;
-  chapters: Chapter[];
-}
-
-export interface Grade {
-  grade: number;
-  codename: string;
-  tagline: string;
-  theme: string;
-  color: string; // accent used on cards
-  terms: Term[];
-}
+// Re-exported so existing call sites importing these from the data module keep working.
+export type { Chapter, Grade, Lesson, LessonRef, LessonType, Term };
 
 const lesson = (
   id: string,
@@ -74,7 +45,7 @@ export const grades: Grade[] = [
             description: "Earth as a planet — day, night, seasons and the view from orbit.",
             hasWeeklyTest: true,
             lessons: [
-              lesson("g4-c1-l1", "Earth From Space", "video"),
+              lesson("g4-c1-l1", "Earth From Space", "reading"),
               lesson("g4-c1-l2", "Spin the Earth: Day & Night", "3d-model", 20, 80),
               lesson("g4-c1-l3", "Seasons Simulator", "simulation", 20, 80),
               lesson("g4-c1-l4", "Checkpoint: Planet Earth", "quiz", 10, 60),
@@ -86,7 +57,7 @@ export const grades: Grade[] = [
             description: "Phases, craters, tides and the story of lunar exploration.",
             hasWeeklyTest: true,
             lessons: [
-              lesson("g4-c2-l1", "Why the Moon Changes Shape", "animation"),
+              lesson("g4-c2-l1", "Why the Moon Changes Shape", "reading"),
               lesson("g4-c2-l2", "Crater Experiment at Home", "experiment", 30, 100),
               lesson("g4-c2-l3", "Explore the Moon in 3D", "3d-model", 20, 80),
               lesson("g4-c2-l4", "Checkpoint: Moon Master", "quiz", 10, 60),
@@ -98,7 +69,7 @@ export const grades: Grade[] = [
             description: "What the Sun is made of, solar energy and staying safe observing it.",
             hasWeeklyTest: true,
             lessons: [
-              lesson("g4-c3-l1", "Inside Our Star", "animation"),
+              lesson("g4-c3-l1", "Inside Our Star", "reading"),
               lesson("g4-c3-l2", "Solar Energy Activity", "activity", 25, 90),
               lesson("g4-c3-l3", "Checkpoint: Solar Scientist", "quiz", 10, 60),
             ],
@@ -116,7 +87,7 @@ export const grades: Grade[] = [
             hasWeeklyTest: true,
             lessons: [
               lesson("g4-c4-l1", "Solar System Flyby", "simulation", 25, 100),
-              lesson("g4-c4-l2", "Rocky vs Gas Planets", "animation"),
+              lesson("g4-c4-l2", "Rocky vs Gas Planets", "reading"),
               lesson("g4-c4-l3", "Build Your Solar System", "activity", 30, 120),
               lesson("g4-c4-l4", "Checkpoint: Planet Explorer", "quiz", 10, 60),
             ],
@@ -153,7 +124,7 @@ export const grades: Grade[] = [
             description: "Forces of flight — lift, thrust, drag and gravity in action.",
             hasWeeklyTest: true,
             lessons: [
-              lesson("g5-c1-l1", "Four Forces of Flight", "animation"),
+              lesson("g5-c1-l1", "Four Forces of Flight", "reading"),
               lesson("g5-c1-l2", "Paper Glider Lab", "experiment", 30, 100),
               lesson("g5-c1-l3", "Checkpoint: Flight Basics", "quiz", 10, 60),
             ],
@@ -183,7 +154,7 @@ export const grades: Grade[] = [
             hasWeeklyTest: true,
             lessons: [
               lesson("g5-c3-l1", "Orbit Simulator", "simulation", 25, 100),
-              lesson("g5-c3-l2", "Newton's Cannonball", "animation"),
+              lesson("g5-c3-l2", "Newton's Cannonball", "reading"),
               lesson("g5-c3-l3", "Checkpoint: Orbit Officer", "quiz", 10, 60),
             ],
           },
@@ -193,7 +164,7 @@ export const grades: Grade[] = [
             description: "From Sputnik to today — the missions that changed history.",
             hasWeeklyTest: true,
             lessons: [
-              lesson("g5-c4-l1", "Timeline of Space", "video"),
+              lesson("g5-c4-l1", "Timeline of Space", "reading"),
               lesson("g5-c4-l2", "Mission Report Activity", "activity", 30, 100),
               lesson("g5-c4-l3", "Checkpoint: Space Historian", "quiz", 10, 60),
             ],
@@ -247,7 +218,7 @@ export const grades: Grade[] = [
             description: "Radio waves, ground stations and how data travels from orbit.",
             hasWeeklyTest: true,
             lessons: [
-              lesson("g6-c3-l1", "Signal Journey Animation", "animation"),
+              lesson("g6-c3-l1", "The Journey of a Signal", "reading"),
               lesson("g6-c3-l2", "Satellite Communication Challenge", "simulation", 25, 110),
               lesson("g6-c3-l3", "Checkpoint: Comms Operator", "quiz", 10, 60),
             ],
@@ -284,7 +255,7 @@ export const grades: Grade[] = [
             description: "Vacuum, radiation, temperature swings — engineering against the void.",
             hasWeeklyTest: true,
             lessons: [
-              lesson("g7-c1-l1", "The Space Environment", "animation"),
+              lesson("g7-c1-l1", "The Space Environment", "reading"),
               lesson("g7-c1-l2", "Thermal Blanket Experiment", "experiment", 30, 110),
               lesson("g7-c1-l3", "Checkpoint: Environment Expert", "quiz", 10, 60),
             ],
@@ -295,7 +266,7 @@ export const grades: Grade[] = [
             description: "Design a 1U CubeSat — power budget, payload choice, structure.",
             hasWeeklyTest: true,
             lessons: [
-              lesson("g7-c2-l1", "What Is a CubeSat?", "video"),
+              lesson("g7-c2-l1", "What Is a CubeSat?", "reading"),
               lesson("g7-c2-l2", "Build a CubeSat Simulator", "simulation", 35, 150),
               lesson("g7-c2-l3", "Power Budget Worksheet", "activity", 25, 90),
               lesson("g7-c2-l4", "Checkpoint: CubeSat Designer", "quiz", 10, 60),
@@ -324,7 +295,7 @@ export const grades: Grade[] = [
             description: "How spacecraft point — reaction wheels, magnetorquers, star trackers.",
             hasWeeklyTest: true,
             lessons: [
-              lesson("g7-c4-l1", "Pointing in Zero-G", "animation"),
+              lesson("g7-c4-l1", "Pointing in Zero-G", "reading"),
               lesson("g7-c4-l2", "Dock the Spacecraft", "simulation", 30, 130),
               lesson("g7-c4-l3", "Checkpoint: ADCS Operator", "quiz", 10, 60),
             ],
@@ -361,7 +332,7 @@ export const grades: Grade[] = [
             description: "The electromagnetic spectrum and how telescopes see the invisible.",
             hasWeeklyTest: true,
             lessons: [
-              lesson("g8-c2-l1", "Beyond Visible Light", "animation"),
+              lesson("g8-c2-l1", "Beyond Visible Light", "reading"),
               lesson("g8-c2-l2", "Build a Spectroscope", "experiment", 35, 130),
               lesson("g8-c2-l3", "Checkpoint: Light Detective", "quiz", 10, 60),
             ],
@@ -378,7 +349,7 @@ export const grades: Grade[] = [
             description: "Nebulae, main sequence, supernovae, neutron stars and black holes.",
             hasWeeklyTest: true,
             lessons: [
-              lesson("g8-c3-l1", "Stellar Evolution Journey", "animation", 20, 80),
+              lesson("g8-c3-l1", "Stellar Evolution Journey", "reading", 20, 80),
               lesson("g8-c3-l2", "HR Diagram Activity", "activity", 25, 90),
               lesson("g8-c3-l3", "Checkpoint: Stellar Scientist", "quiz", 10, 60),
             ],
@@ -453,7 +424,7 @@ export const grades: Grade[] = [
             description: "Europa, Enceladus, Titan — the search for life beyond Earth.",
             hasWeeklyTest: true,
             lessons: [
-              lesson("g9-c4-l1", "Ocean Worlds Tour", "animation", 20, 80),
+              lesson("g9-c4-l1", "Ocean Worlds Tour", "reading", 20, 80),
               lesson("g9-c4-l2", "Checkpoint: Astrobiologist", "quiz", 10, 60),
             ],
           },
@@ -489,7 +460,7 @@ export const grades: Grade[] = [
             description: "Selection, training and what it takes to fly.",
             hasWeeklyTest: true,
             lessons: [
-              lesson("g10-c2-l1", "Inside Astronaut Training", "video", 20, 80),
+              lesson("g10-c2-l1", "Inside Astronaut Training", "reading", 20, 80),
               lesson("g10-c2-l2", "Moon Landing Challenge", "simulation", 30, 140),
               lesson("g10-c2-l3", "Checkpoint: Flight Ready", "quiz", 10, 60),
             ],
@@ -517,7 +488,7 @@ export const grades: Grade[] = [
             description: "Engineering, science, medicine, law, art — pathways to the stars.",
             hasWeeklyTest: true,
             lessons: [
-              lesson("g10-c4-l1", "Meet Space Professionals", "video", 20, 80),
+              lesson("g10-c4-l1", "Meet Space Professionals", "reading", 20, 80),
               lesson("g10-c4-l2", "Capstone Mission Project", "activity", 60, 300),
               lesson("g10-c4-l3", "Final Assessment", "quiz", 20, 120),
             ],
@@ -529,16 +500,6 @@ export const grades: Grade[] = [
 ];
 
 export const getGrade = (grade: number) => grades.find((g) => g.grade === grade);
-
-/** Full context for a lesson: its grade, term, chapter and neighbours. */
-export interface LessonRef {
-  grade: Grade;
-  term: Term;
-  chapter: Chapter;
-  lesson: Lesson;
-  prev: Lesson | null;
-  next: Lesson | null;
-}
 
 export function findLesson(lessonId: string): LessonRef | null {
   for (const grade of grades) {
@@ -562,8 +523,6 @@ export function findLesson(lessonId: string): LessonRef | null {
 }
 
 export const lessonTypeMeta: Record<LessonType, { label: string; icon: string }> = {
-  video: { label: "Video", icon: "▶" },
-  animation: { label: "Animation", icon: "✦" },
   "3d-model": { label: "3D Model", icon: "◈" },
   activity: { label: "Activity", icon: "✎" },
   experiment: { label: "Experiment", icon: "⚗" },

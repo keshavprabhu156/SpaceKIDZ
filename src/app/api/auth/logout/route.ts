@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { SESSION_COOKIE } from "@/services/auth";
+import { SESSION_COOKIE } from "@/services/tokenService";
 
 export async function POST() {
   const res = NextResponse.json({ ok: true });

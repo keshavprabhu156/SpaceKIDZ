@@ -5,12 +5,23 @@ Built as an immersive "Space Academy" — 3D astronaut hero, mission-control das
 interactive orbit simulations, games, and full role-based portals for students, teachers
 and administrators.
 
+> **New to this project? Read [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md) first.**
+> It explains the architecture (why there is no separate backend folder), how to create
+> and connect the Supabase database, and exactly which folder your code belongs in.
+
 ## Quick Start
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
+npm run dev        # http://localhost:3000 — frontend AND backend
 npm run build      # production build
+```
+
+Database (see the guide for full Supabase setup):
+
+```bash
+npm run db:deploy && npm run db:seed   # create tables + starter data
+npm run db:studio                      # visual database browser
 ```
 
 ### Demo Accounts (password: `space123`)
@@ -41,7 +52,9 @@ Prisma schema ready for PostgreSQL.
   `data-reveal` / `data-reveal-stagger` / `data-parallax` attributes (see
   `src/components/fx/ScrollFX.tsx`). Respects `prefers-reduced-motion`.
 - **Curriculum** — data-driven grades 4–10 (`src/data/curriculum.ts`): terms → chapters →
-  lessons with types (video, 3D model, simulation, experiment, quiz…), durations and XP.
+  lessons with types (reading, 3D model, simulation, experiment, quiz…), durations and XP.
+  There is deliberately no video/animation format — the curriculum is book material
+  from *Space Science* plus quizzes.
 - **Interactive demo** (`/demo`) — real two-body-physics orbit simulator (R3F) + a working
   weekly-test engine (MCQ, true/false, match-the-following, image identification) with
   instant evaluation and explanations.
@@ -51,8 +64,8 @@ Prisma schema ready for PostgreSQL.
 - **Lesson viewer** (`/student/learn/[lessonId]`) — every lesson in the curriculum opens
   in an interactive viewer that renders by type: `3d-model` lessons get the clickable
   Satellite Anatomy Explorer (6 subsystems with readouts), `simulation` lessons embed the
-  orbit simulator, `quiz` lessons run the assessment engine, video/animation lessons get
-  the player shell + mission briefing (media plugs in with curriculum assets), and
+  orbit simulator, `quiz` lessons run the assessment engine, `reading` lessons render the
+  book chapter in a readable measure with an objectives sidebar, and
   activities/experiments render structured procedure cards. Completion persists to
   localStorage (mirrors the Prisma `LessonProgress` model) with an XP toast, plus
   prev/next lesson navigation. Curriculum grade pages are session-aware: visitors see
@@ -105,7 +118,8 @@ Prisma (schema already written); zero UI changes.
 | Logo / branding        | `public/brand/`, swap placeholder mark in `Navbar.tsx` + `PortalShell.tsx` |
 | Astronaut GLTF         | Replace primitive meshes inside `components/three/Astronaut.tsx` — keep the group refs; all animations (wave, breathe, mouse-follow) drive the rig, not the meshes |
 | Curriculum content     | Replace/extend `src/data/curriculum.ts`, or serve the same shapes from `/api/curriculum` once Prisma lands |
-| Lesson videos/3D files | Cloud storage; `Lesson.contentUrl` field is reserved in the Prisma schema |
+| Book text per lesson   | `Lesson.body` in the Prisma schema (paragraphs of chapter content) |
+| Figures/diagrams/3D    | Cloud storage; `Lesson.contentUrl` field is reserved in the Prisma schema |
 | Question banks         | `WeeklyTest`/`Question` models (JSON payload per question type) |
 
 ## Production Checklist

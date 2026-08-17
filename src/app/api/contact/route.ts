@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { validateContactEnquiry } from "@/validation/contactValidation";
+import type { ContactEnquiry } from "@/types/contact";
 
 /**
  * Contact / partnership enquiries.
@@ -7,16 +9,19 @@ import { NextResponse } from "next/server";
  * flow is fully testable.
  */
 export async function POST(req: Request) {
-  const body = await req.json().catch(() => null);
-  const { name, email, organization, message } = body ?? {};
+  const body = (await req.json().catch(() => null)) as ContactEnquiry | null;
 
-  if (!name?.trim() || !message?.trim()) {
-    return NextResponse.json({ error: "Name and message are required" }, { status: 400 });
-  }
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return NextResponse.json({ error: "A valid email is required" }, { status: 400 });
+  const invalid = validateContactEnquiry(body);
+  if (invalid) {
+    return NextResponse.json({ error: invalid }, { status: 400 });
   }
 
-  console.info("[contact] enquiry received", { name, email, organization: organization ?? "—" });
+  const { name, email, organization } = body!;
+  console.info("[contact] enquiry received", {
+    name,
+    email,
+    organization: organization ?? "—",
+  });
+
   return NextResponse.json({ ok: true });
 }

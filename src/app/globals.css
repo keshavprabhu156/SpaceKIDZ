@@ -7,7 +7,7 @@
   --accent: #4f7df9;
   --accent-2: #8b5cf6;
   --accent-deep: #2b4acb;
-  --rule: rgba(238, 241, 248, 0.12);
+  --rule: rgba(238, 241, 248, 0.1);
 }
 
 html {
@@ -19,9 +19,6 @@ body {
   background-color: var(--space-black);
   color: #eef1f8;
   overflow-x: hidden;
-  /* faint film grain so flat darks read as photographed, not rendered */
-  background-image: radial-gradient(rgba(238, 241, 248, 0.012) 1px, transparent 1px);
-  background-size: 3px 3px;
 }
 
 ::selection {
@@ -45,16 +42,25 @@ body {
   background: #2b3a63;
 }
 
-/* ---------- Surfaces ---------- */
 @layer components {
-  /* Quiet editorial card — hairline border, faint fill, natural elevation */
+  /* ---------- Surfaces ---------- */
   .glass-panel {
-    @apply rounded-xl border border-star/10 bg-white/[0.015];
+    @apply rounded-2xl border border-star/10 bg-white/[0.02];
   }
   .holo-panel {
-    @apply rounded-xl border border-star/10 bg-white/[0.02] shadow-holo;
+    @apply rounded-2xl border border-star/10 bg-white/[0.025] shadow-holo;
   }
-  /* A single warm hairline at the top edge, no neon rim */
+
+  /* Course/feature card — the workhorse of the educational layout */
+  .card-edu {
+    @apply relative overflow-hidden rounded-2xl border border-star/10 bg-space-navy/50 p-7 transition-all duration-300;
+  }
+  .card-edu:hover {
+    @apply border-electric/40 bg-space-navy/80;
+    transform: translateY(-4px);
+  }
+
+  /* Gradient hairline along a card's top edge */
   .holo-border {
     position: relative;
   }
@@ -64,14 +70,13 @@ body {
     inset: 0;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(180deg, rgba(224, 168, 96, 0.28), transparent 30%);
+    background: linear-gradient(180deg, rgba(79, 125, 249, 0.5), transparent 45%);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
   }
 
-  /* Glow classes — soft, cool */
   .text-glow-cyan,
   .text-glow-nebula {
     text-shadow: 0 0 24px rgba(111, 141, 251, 0.35);
@@ -80,98 +85,46 @@ body {
     text-shadow: 0 1px 12px rgba(224, 168, 96, 0.2);
   }
 
-  /* Signature gradient text (like LEARN. / INSPIRE. in the brand tagline) */
+  /* Signature blue→violet gradient text */
   .text-grad {
     @apply bg-brand-grad bg-clip-text text-transparent;
   }
 
   /* ---------- Buttons ---------- */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-grad px-6 py-3 font-body text-sm font-semibold tracking-wide text-white shadow-glow transition-all duration-200;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand-grad px-7 py-3.5 font-body text-sm font-semibold tracking-wide text-white shadow-glow transition-all duration-200;
   }
   .btn-primary:hover {
     filter: brightness(1.12);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-star/20 bg-white/[0.03] px-6 py-3 font-body text-sm font-medium tracking-wide text-star transition-all duration-200 hover:border-electric/60 hover:text-electric;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-star/20 bg-white/[0.04] px-7 py-3.5 font-body text-sm font-medium tracking-wide text-star backdrop-blur-sm transition-all duration-200 hover:border-electric/60 hover:bg-white/[0.08];
   }
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 font-body text-sm font-medium tracking-wide text-star/70 transition-colors duration-200 hover:text-electric;
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 font-body text-sm font-medium tracking-wide text-star/70 transition-colors duration-200 hover:text-electric;
   }
 
   /* ---------- Forms ---------- */
   .input-holo {
-    @apply w-full rounded-lg border border-star/[0.12] bg-white/[0.04] px-4 py-3 text-sm text-star placeholder-star/35 outline-none backdrop-blur-sm transition-all duration-200 focus:border-electric/70 focus:bg-white/[0.06];
+    @apply w-full rounded-xl border border-star/[0.12] bg-white/[0.04] px-4 py-3 text-sm text-star placeholder-star/35 outline-none backdrop-blur-sm transition-all duration-200 focus:border-electric/70 focus:bg-white/[0.07];
   }
   .label-holo {
     @apply mb-1.5 block font-body text-xs font-medium tracking-wide text-star/60;
   }
 
-  /* ---------- Editorial eyebrow (rule + small caps label) ---------- */
+  /* ---------- Section eyebrow ---------- */
   .section-tag {
-    @apply mb-5 inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.22em] text-electric;
+    @apply mb-4 inline-flex items-center gap-2 rounded-full border border-electric/25 bg-electric/10 px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-electric;
   }
-  .section-tag::before {
-    content: "";
-    display: inline-block;
-    width: 28px;
-    height: 1px;
-    background: var(--accent);
-    opacity: 0.7;
+
+  /* Big section headline */
+  .h-section {
+    @apply font-display text-3xl font-bold leading-[1.08] tracking-tight text-star sm:text-4xl md:text-5xl;
   }
-}
-
-/* ---------- Atlas devices ---------- */
-/* Figure caption — the museum-label voice used under imagery and diagrams */
-.fig-caption {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(236, 231, 223, 0.45);
-}
-.fig-caption em {
-  font-family: var(--font-display);
-  font-style: italic;
-  text-transform: none;
-  letter-spacing: 0;
-  font-size: 12px;
-  color: rgba(236, 231, 223, 0.6);
-}
-
-/* Corner registration ticks — frames content like a plate in an atlas */
-.plate-frame {
-  position: relative;
-}
-.plate-frame::before,
-.plate-frame::after {
-  content: "";
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  pointer-events: none;
-  opacity: 0.5;
-}
-.plate-frame::before {
-  top: 0;
-  left: 0;
-  border-top: 1px solid var(--accent);
-  border-left: 1px solid var(--accent);
-}
-.plate-frame::after {
-  bottom: 0;
-  right: 0;
-  border-bottom: 1px solid var(--accent);
-  border-right: 1px solid var(--accent);
-}
-
-/* Dotted orbit rule — separates catalogue rows */
-.dotted-rule {
-  background-image: linear-gradient(90deg, rgba(236, 231, 223, 0.25) 1px, transparent 1px);
-  background-size: 7px 1px;
-  background-repeat: repeat-x;
-  height: 1px;
+  .lede {
+    @apply text-base leading-relaxed text-star/60 sm:text-lg;
+  }
 }
 
 /* ---------- Star field (CSS layers behind content sections) ---------- */
@@ -182,13 +135,21 @@ body {
   pointer-events: none;
 }
 
-/* Hairline divider helper */
 .rule-line {
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--rule), transparent);
 }
 
-/* ---------- Dialog entry animations (kept, softened) ---------- */
+/* Soft aurora blobs used behind sections for depth */
+.aurora {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(120px);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ---------- Dialog entry animations ---------- */
 @keyframes scaleUpFade {
   from {
     opacity: 0;
@@ -218,6 +179,35 @@ body {
   animation: backdropFade 0.45s ease-out forwards;
 }
 
+/* Hero headline word rise — pure CSS so the headline can never be
+   left invisible by a JS/GSAP failure. */
+@keyframes wordRise {
+  from {
+    transform: translateY(115%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.word-rise {
+  animation: wordRise 0.95s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Orbiting dot used in the simulation mock */
+@keyframes orbitPath {
+  from {
+    transform: rotate(0deg) translateX(74px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(74px) rotate(-360deg);
+  }
+}
+.animate-orbit-dot {
+  animation: orbitPath 7s linear infinite;
+}
+
 /* Reduce motion for accessibility (WCAG) */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -227,6 +217,7 @@ body {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }

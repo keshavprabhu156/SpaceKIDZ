@@ -1,18 +1,10 @@
 import type { Metadata } from "next";
-import PortalShell from "@/components/portal/PortalShell";
+import PortalLayout from "@/layouts/PortalLayout";
+import { teacherSidebar } from "@/configs/portalSidebarConfig";
 import { getSession } from "@/utils/session";
 import { teacherClasses, teacherResources, classPerformance } from "@/data/dashboard";
 
 export const metadata: Metadata = { title: "Teacher Portal — Instructor Deck" };
-
-const nav = [
-  { label: "Instructor Deck", icon: "▣", href: "/teacher", active: true },
-  { label: "Lesson Plans", icon: "◈", href: "/teacher#resources" },
-  { label: "Question Banks", icon: "?", href: "/teacher#resources" },
-  { label: "Class Analytics", icon: "◉", href: "/teacher#analytics" },
-  { label: "Announcements", icon: "📡", href: "/teacher#classes" },
-  { label: "Curriculum", icon: "⬡", href: "/curriculum" },
-];
 
 const typeIcon: Record<string, string> = {
   manual: "📘", plan: "🗺", questions: "❓", test: "▣", experiment: "⚗", slides: "🖥",
@@ -25,12 +17,12 @@ export default async function TeacherPortal() {
   const parts = name.split(" ");
   const shortName = parts[0].endsWith(".") ? parts.slice(0, 2).join(" ") : parts[0];
   return (
-    <PortalShell
+    <PortalLayout
       title="Instructor Deck"
       role="Teacher · Certified Instructor"
       userName={session?.name ?? "Instructor"}
       userId={session?.sub ?? "ISC-T-XXXX-XXXXXX"}
-      nav={nav}
+      nav={teacherSidebar}
     >
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
@@ -139,6 +131,6 @@ export default async function TeacherPortal() {
           </ul>
         </div>
       </div>
-    </PortalShell>
+    </PortalLayout>
   );
 }

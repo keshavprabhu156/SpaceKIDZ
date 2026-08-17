@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import PortalShell from "@/components/portal/PortalShell";
-import Flag from "@/components/ui/Flag";
+import PortalLayout from "@/layouts/PortalLayout";
+import { studentSidebar } from "@/configs/portalSidebarConfig";
+import Flag from "@/components/common/Flag";
 import { getSession } from "@/utils/session";
 import { achievements } from "@/data/global";
 import {
@@ -16,15 +17,6 @@ import {
 
 export const metadata: Metadata = { title: "Mission Control — Student Dashboard" };
 
-const nav = [
-  { label: "Mission Control", icon: "◉", href: "/student", active: true },
-  { label: "My Curriculum", icon: "◈", href: "/curriculum" },
-  { label: "Weekly Tests", icon: "▣", href: "/student/tests" },
-  { label: "Game Deck", icon: "🎮", href: "/games" },
-  { label: "Achievements", icon: "🏅", href: "/student#achievements" },
-  { label: "Leaderboard", icon: "⬆", href: "/student#leaderboard" },
-];
-
 export default async function StudentDashboard() {
   const session = await getSession();
   const name = session?.name ?? "Cadet";
@@ -35,12 +27,12 @@ export default async function StudentDashboard() {
   const earned = achievements.filter((a) => earnedBadgeIds.includes(a.id));
 
   return (
-    <PortalShell
+    <PortalLayout
       title="Mission Control"
       role={`Student · Grade ${session?.grade ?? s.currentChapter.grade}`}
       userName={name}
       userId={session?.sub ?? "ISC-S-XXXX-XXXXXX"}
-      nav={nav}
+      nav={studentSidebar}
     >
       {/* ---------- Header ---------- */}
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -263,6 +255,6 @@ export default async function StudentDashboard() {
           </div>
         </div>
       </div>
-    </PortalShell>
+    </PortalLayout>
   );
 }
