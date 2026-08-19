@@ -22,8 +22,9 @@ datasource db {
 enum Role {
   STUDENT
   TEACHER
-  SCHOOL_ADMIN // principal / coordinator — manages ONE school
-  ADMIN // platform owner — manages all schools
+  SCHOOL_ADMIN // principal / coordinator — manages ONE school (portal not built yet)
+  ADMIN // platform staff — manages all schools
+  SUPER_ADMIN // platform owner — everything ADMIN can do, plus the /super console
 }
 
 model User {
@@ -273,4 +274,15 @@ model Announcement {
   title     String
   body      String
   createdAt DateTime @default(now())
+}
+
+/** A school/partner enquiry submitted through the public contact form. */
+model Enquiry {
+  id           String   @id @default(cuid())
+  name         String
+  email        String
+  organization String?
+  message      String
+  handled      Boolean  @default(false)
+  createdAt    DateTime @default(now())
 }

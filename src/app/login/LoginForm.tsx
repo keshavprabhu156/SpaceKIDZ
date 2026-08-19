@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { PORTAL_PATH } from "@/utils/rolePortal";
+import type { Role } from "@/types/user";
 
 /* ---------- inline icons ---------- */
 
@@ -107,7 +109,7 @@ export default function LoginForm() {
         setError(data.error ?? "Login failed");
         return;
       }
-      router.push(nextPath ?? `/${data.role}`);
+      router.push(nextPath ?? PORTAL_PATH[data.role as Role]);
       router.refresh();
     } catch {
       setError("We couldn’t reach the server. Check your connection and retry.");

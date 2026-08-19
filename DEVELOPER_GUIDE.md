@@ -400,7 +400,6 @@ simulator, weekly-test engine, login/registration/logout, role-gated portals, PW
 
 | Item | Where |
 | --- | --- |
-| Contact form only logs to console — no `Enquiry` table yet | `src/app/api/contact/route.ts` |
 | Only Grade 6 is seeded into the database; other grades come from static `src/data` | `prisma/seed.ts` |
 | 10 of 16 games are not yet playable | `src/data/games.ts` (`playable: false`) |
 | Google Sign-In is UI-only | `src/app/login/LoginForm.tsx` |

@@ -4,10 +4,11 @@ export interface NavLink {
   label: string;
 }
 
-/** A link in a portal sidebar. */
+/** A link in a portal sidebar. Highlighting is derived from the current URL
+ *  (see PortalSidebar), not stored here — a hardcoded flag goes stale the
+ *  moment a second page exists in the same portal. */
 export interface NavItem {
   label: string;
   icon: string;
   href: string;
-  active?: boolean;
 }

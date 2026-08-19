@@ -1,4 +1,4 @@
-export type Role = "student" | "teacher" | "admin";
+export type Role = "student" | "teacher" | "school_admin" | "admin" | "super_admin";
 
 /** Decoded JWT session payload stored in the `isc_session` cookie. */
 export interface SessionPayload {

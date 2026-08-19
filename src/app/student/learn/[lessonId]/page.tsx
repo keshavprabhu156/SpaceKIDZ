@@ -35,6 +35,7 @@ export default async function LessonPage({
     <PortalLayout
       title="Mission Control"
       role={`Student · Grade ${session?.grade ?? ref.grade.grade}`}
+      roleValue="student"
       userName={session?.name ?? "Cadet"}
       userId={session?.sub ?? "ISC-S-XXXX-XXXXXX"}
       nav={studentSidebar}

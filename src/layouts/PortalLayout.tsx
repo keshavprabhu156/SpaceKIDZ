@@ -1,5 +1,4 @@
 import Link from "next/link";
-import StarBackground from "@/components/fx/StarBackground";
 import LogoutButton from "@/components/common/LogoutButton";
 import PortalSidebar from "@/components/sidebar/PortalSidebar";
 import AuthProvider from "@/context/AuthProvider";
@@ -16,13 +15,18 @@ import type { Role, SessionPayload } from "@/types/user";
 export default function PortalLayout({
   title,
   role,
+  roleValue,
   userName,
   userId,
   nav,
   children,
 }: {
   title: string;
+  /** Human-readable label shown in the sidebar, e.g. "Teacher" or "Student · Grade 6". */
   role: string;
+  /** The actual Role enum value — NOT derived from `role`, which is free text
+   *  and often doesn't lowercase into a valid Role (e.g. "Student · Grade 6"). */
+  roleValue: Role;
   userName: string;
   userId: string;
   nav: NavItem[];
@@ -31,13 +35,16 @@ export default function PortalLayout({
   const user: SessionPayload = {
     sub: userId,
     name: userName,
-    role: role.toLowerCase() as Role,
+    role: roleValue,
   };
 
   return (
     <AuthProvider initialUser={user}>
+      {/* A flat ground + a faint static brand tint — not the marketing site's
+          animated, twinkling starfield. A tool you use for hours shouldn't
+          have decorative motion running behind every page. */}
       <div className="relative min-h-screen bg-space-black">
-        <StarBackground />
+        <div className="pointer-events-none absolute inset-0 bg-nebula-radial" aria-hidden />
         <div className="relative flex min-h-screen">
           <PortalSidebar
             title={title}

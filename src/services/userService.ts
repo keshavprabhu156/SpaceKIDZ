@@ -12,16 +12,40 @@ import type { Role, StudentProfile, User } from "@/types/user";
 // Re-exported so existing call sites importing these from the service keep working.
 export type { StudentProfile, User };
 
+// Explicit, exhaustive mapping in both directions — deliberately NOT a
+// fallback/default. An unrecognized value throws instead of silently
+// becoming "admin", which is what the old two-branch version did the moment
+// a role other than STUDENT/TEACHER/ADMIN existed in the database.
 function toAppRole(dbRole: string): Role {
-  if (dbRole === "STUDENT") return "student";
-  if (dbRole === "TEACHER") return "teacher";
-  return "admin";
+  switch (dbRole) {
+    case "STUDENT":
+      return "student";
+    case "TEACHER":
+      return "teacher";
+    case "SCHOOL_ADMIN":
+      return "school_admin";
+    case "ADMIN":
+      return "admin";
+    case "SUPER_ADMIN":
+      return "super_admin";
+    default:
+      throw new Error(`Unknown role from database: ${dbRole}`);
+  }
 }
 
 function toPrismaRole(role: Role) {
-  if (role === "student") return "STUDENT";
-  if (role === "teacher") return "TEACHER";
-  return "ADMIN";
+  switch (role) {
+    case "student":
+      return "STUDENT";
+    case "teacher":
+      return "TEACHER";
+    case "school_admin":
+      return "SCHOOL_ADMIN";
+    case "admin":
+      return "ADMIN";
+    case "super_admin":
+      return "SUPER_ADMIN";
+  }
 }
 
 export async function findByEmail(email: string): Promise<User | undefined> {

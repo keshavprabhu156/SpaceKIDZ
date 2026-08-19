@@ -1,74 +1,68 @@
 import type { Metadata } from "next";
 import PortalLayout from "@/layouts/PortalLayout";
+import PortalPageHeader from "@/components/common/PortalPageHeader";
 import { studentSidebar } from "@/configs/portalSidebarConfig";
 import SampleTest from "@/components/demo/SampleTest";
 import { getSession } from "@/utils/session";
+import { getStudentOverview } from "@/services/studentService";
 
-export const metadata: Metadata = { title: "Weekly Tests — Mission Assessments" };
+export const metadata: Metadata = { title: "Weekly Tests" };
+export const dynamic = "force-dynamic";
 
-const history = [
-  { id: 1, title: "Weekly Test 3 — Anatomy of a Satellite", score: 85, date: "Last Friday" },
-  { id: 2, title: "Weekly Test 2 — The Moon", score: 92, date: "2 weeks ago" },
-  { id: 3, title: "Weekly Test 1 — Our Home Planet Earth", score: 78, date: "3 weeks ago" },
-];
+const scoreBadge = (pct: number) =>
+  pct >= 70 ? "badge-ok" : pct >= 50 ? "badge-warn" : "badge-danger";
 
 export default async function WeeklyTestsPage() {
   const session = await getSession();
+  const overview = session ? await getStudentOverview(session.sub) : null;
+
   return (
     <PortalLayout
-      title="Mission Control"
-      role={`Student · Grade ${session?.grade ?? 6}`}
-      userName={session?.name ?? "Cadet"}
-      userId={session?.sub ?? "ISC-S-XXXX-XXXXXX"}
+      title="Weekly Tests"
+      role={`Student · Grade ${session?.grade ?? "—"}`}
+      roleValue="student"
+      userName={session?.name ?? "Student"}
+      userId={session?.sub ?? "—"}
       nav={studentSidebar}
     >
-      <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-electric/70">
-        ▣ Assessment Bay
-      </p>
-      <h1 className="mt-2 font-display text-2xl font-bold uppercase tracking-wide text-star sm:text-3xl">
-        Weekly <span className="text-electric">Tests</span>
-      </h1>
+      <PortalPageHeader eyebrow="Assessments" title="Weekly Tests" />
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_320px]">
+      <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_300px]">
         <div>
-          <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.25em] text-star/40">
-            This week · Types of Orbits · due Friday
-          </p>
           <SampleTest />
         </div>
 
         <div className="space-y-5">
-          <div className="holo-panel p-6">
-            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-electric/70">
-              Past Results
-            </p>
-            <ul className="mt-4 space-y-3.5">
-              {history.map((h) => (
-                <li key={h.id} className="flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="truncate text-sm text-star/80">{h.title}</p>
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-star/35">{h.date}</p>
-                  </div>
-                  <span
-                    className={`shrink-0 rounded-full border px-2.5 py-1 font-mono text-[11px] ${
-                      h.score >= 85 ? "border-gold/40 text-gold" : "border-electric/40 text-electric"
-                    }`}
-                  >
-                    {h.score}%
-                  </span>
-                </li>
-              ))}
-            </ul>
+          <div className="rounded-lg border border-star/10 p-5">
+            <p className="text-xs font-semibold text-star/50">Past results</p>
+            {overview && overview.recentAttempts.length > 0 ? (
+              <ul className="mt-3 space-y-3">
+                {overview.recentAttempts.map((a, i) => (
+                  <li key={i} className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm text-star/80">{a.chapterTitle}</p>
+                      <p className="text-xs text-star/40">
+                        {new Date(a.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <span className={`shrink-0 ${scoreBadge(a.scorePct)}`}>{a.scorePct}%</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-2 text-xs text-star/45">
+                No tests completed yet — your first result will show up here.
+              </p>
+            )}
           </div>
-          <div className="holo-panel p-6">
-            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-electric/70">
-              How Scoring Works
-            </p>
-            <ul className="mt-3 space-y-2 text-xs leading-relaxed text-star/50">
-              <li>▸ Instant evaluation with explanations for every question</li>
-              <li>▸ 75%+ passes the chapter and awards its badge</li>
-              <li>▸ XP counts toward your global leaderboard rank</li>
-              <li>▸ Below 75%? You get targeted lesson recommendations and one retake</li>
+
+          <div className="rounded-lg border border-star/10 p-5">
+            <p className="text-xs font-semibold text-star/50">How scoring works</p>
+            <ul className="mt-3 space-y-2 text-xs leading-relaxed text-star/55">
+              <li>Instant evaluation with an explanation for every question.</li>
+              <li>75%+ passes the chapter and awards its badge.</li>
+              <li>XP counts toward your class leaderboard rank.</li>
+              <li>Each weekly test allows one attempt — make it count.</li>
             </ul>
           </div>
         </div>
